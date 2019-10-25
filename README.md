@@ -17,6 +17,7 @@ I'll write up more comprehensive information (and upload some proper gerber file
 ![Schematic](renders/schematic_render.png)
 
 ![Board Top](renders/board_top.png)
+
 ![Board Bottom](renders/board_bot.png)
 
 # Current Status
