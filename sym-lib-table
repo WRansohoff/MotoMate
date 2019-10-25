@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name MotoMate-rescue)(type Legacy)(uri ${KIPRJMOD}/MotoMate-rescue.lib)(options "")(descr ""))
+  (lib (name MotoMate)(type Legacy)(uri ${KIPRJMOD}/MotoMate.lib)(options "")(descr ""))
+)

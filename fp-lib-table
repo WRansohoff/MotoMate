@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name MotoMate)(type KiCad)(uri ${KIPRJMOD}/MotoMate.pretty)(options "")(descr ""))
+)
