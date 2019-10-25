@@ -30,7 +30,7 @@ I've assembled an earlier version of this design and confirmed that most parts o
 
 Sorry that I didn't get a picture of the lit-up TFT; it's hard to take pictures of backlit displays, and it's not that important anyways. I also edited one of the images to remove the actual GPS coordinates, because I didn't feel like driving out to the middle of the woods to take a picture.
 
-Anyways, so far I've tested:
+Anyways, so far I've tested (or not) the following parts:
 
 * Battery monitoring: the 'charging' and 'done' LEDs seem to reflect the charge status, and the 12-bit ADC reads close to 4.2V on a full charge using the formula: `VBatt = ( ADC * 2 / 4095 ) * 3.3`. Note that for an accurate reading, you need to set one of the highest sampling times (250-650 cycles) due to the low amount of current flowing through the voltage divider.
 
@@ -40,7 +40,7 @@ Anyways, so far I've tested:
 
 * microSD card: Not tested.
 
-* Buttons: Not tested. I don't have any excuse for not testing these, it's one of the simplest things to test. Maybe I can write a test for them when I upload the firmwares I used to test the other functionality.
+* Buttons: Not tested. I don't have any excuse for not testing these, it's one of the simplest things to test. This should be the next thing on my list...
 
 * Auxiliary UARTs and I2C: Not tested.
 
@@ -49,3 +49,5 @@ Anyways, so far I've tested:
 * Photodiode: Not tested; in the first revision of the board, I put the photodiode underneath where the display's ribbon connector folded over, so it was always in darkness. D'oh!
 
 * Speaker: Works well enough to play a sine wave accurately enough for a tuner to read the desired note. I haven't tried playing music or speech though, and it probably wouldn't do that very well. This is only a 12-bit DAC with poor filtering, after all. The speaker is mostly intended for beeps, buzzes, and chirps.
+
+See `firmware/` for the source code used to run those tests, and `fw_lib/` for some shared helper functions.
