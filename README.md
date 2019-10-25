@@ -20,11 +20,17 @@ I'll write up more comprehensive information (and upload some proper gerber file
 
 ![Board Bottom](renders/board_bot.png)
 
-# Current Status
+# Previous Revision
 
 I've assembled an earlier version of this design and confirmed that most parts of the design work, but I haven't written a comprehensive "GPS mapper" firmware yet. The first version has too much space between the TFT ribbon connector and the edge of the board to fold the display over the USB connector and mute switch, so it was awkward to handle. I hope that this version will fit together better, but I haven't received it yet for testing.
 
-So far I have tested:
+![V1 Top](renders/v1_top.png)
+
+![V1 Bottom](renders/v1_bot.png)
+
+Sorry that I didn't get a picture of the lit-up TFT; it's hard to take pictures of backlit displays, and it's not that important anyways. I also edited one of the images to remove the actual GPS coordinates, because I didn't feel like driving out to the middle of the woods to take a picture.
+
+Anyways, so far I've tested:
 
 * Battery monitoring: the 'charging' and 'done' LEDs seem to reflect the charge status, and the 12-bit ADC reads close to 4.2V on a full charge using the formula: `VBatt = ( ADC * 2 / 4095 ) * 3.3`. Note that for an accurate reading, you need to set one of the highest sampling times (250-650 cycles) due to the low amount of current flowing through the voltage divider.
 
