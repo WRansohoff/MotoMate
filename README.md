@@ -1,8 +1,8 @@
-#"MotoMate" Handheld GPS Receiver
+# "MotoMate" Handheld GPS Receiver
 
 This is a small board designed to act as a handheld GPS receiver, and eventually (I hope) a handlebar-mounted GPS mapper / tracker for offroad motorcycling.
 
-#Details
+# Details
 
 The microcontroller core is an STM32L496Rx chip - I recommend the STM32L496RGT3, because it costs less than $1 to get an extra 512KB of Flash. The 320KB of built-in RAM is enough to store a 150KB framebuffer for the 320x240 16bpp ILI9341 display, but it doesn't leave much room for storage-intensive algorithms such as image processing. Still, there's no external storage to worry about besides the microSD card.
 
@@ -12,7 +12,14 @@ There's also a single-channel audio amplifier connected to one of the chip's DAC
 
 I'll write up more comprehensive information (and upload some proper gerber files) once I've had a chance to test this revision and upload some basic test firmwares to confirm the board's various functions.
 
-#Current Status
+# Schematic and Board Renders
+
+![Schematic](renders/schematic_render.png)
+
+![Board Top](renders/board_top.png)
+![Board Bottom](renders/board_bot.png)
+
+# Current Status
 
 I've assembled an earlier version of this design and confirmed that most parts of the design work, but I haven't written a comprehensive "GPS mapper" firmware yet. The first version has too much space between the TFT ribbon connector and the edge of the board to fold the display over the USB connector and mute switch, so it was awkward to handle. I hope that this version will fit together better, but I haven't received it yet for testing.
 
