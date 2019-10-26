@@ -77,19 +77,19 @@ AS_SRC    = ./boot_code/$(MCU_FILES)_core.S
 AS_SRC   += ./vector_tables/$(MCU_FILES)_vt.S
 C_SRC     = ./src/main.c
 C_SRC    += ./src/interrupts.c
-C_SRC    += ./../../lib/bsp/hal/adc.c
-C_SRC    += ./../../lib/bsp/hal/dma.c
-C_SRC    += ./../../lib/bsp/hal/gpio.c
-C_SRC    += ./../../lib/bsp/hal/rcc.c
-C_SRC    += ./../../lib/bsp/hal/spi.c
-C_SRC    += ./../../lib/bsp/hal/tim.c
-C_SRC    += ./../../lib/util/ili9341.c
-C_SRC    += ./../../lib/util/ufb.c
+C_SRC    += ./../../fw_lib/bsp/hal/adc.c
+C_SRC    += ./../../fw_lib/bsp/hal/dma.c
+C_SRC    += ./../../fw_lib/bsp/hal/gpio.c
+C_SRC    += ./../../fw_lib/bsp/hal/rcc.c
+C_SRC    += ./../../fw_lib/bsp/hal/spi.c
+C_SRC    += ./../../fw_lib/bsp/hal/tim.c
+C_SRC    += ./../../fw_lib/util/ili9341.c
+C_SRC    += ./../../fw_lib/util/ufb.c
 
 INCLUDE   = -I./
 INCLUDE  += -I./device_headers
-INCLUDE  += -I./../../lib/util
-INCLUDE  += -I./../../lib/bsp
+INCLUDE  += -I./../../fw_lib/util
+INCLUDE  += -I./../../fw_lib/bsp
 
 OBJS  = $(AS_SRC:.S=.o)
 OBJS += $(C_SRC:.c=.o)

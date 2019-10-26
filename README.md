@@ -28,7 +28,7 @@ I've assembled an earlier version of this design and confirmed that most parts o
 
 ![V1 Bottom](renders/v1_bot.png)
 
-Sorry that I didn't get a picture of the lit-up TFT; it's hard to take pictures of backlit displays, and it's not that important anyways. I also edited one of the images to remove the actual GPS coordinates, because I didn't feel like driving out to the middle of the woods to take a picture.
+Sorry that I didn't get a better picture of the lit-up TFT; it's hard to take pictures of backlit displays, and it's not that important anyways. I also edited one of the images to remove the actual GPS coordinates, because I didn't feel like driving out to the middle of the woods to take a picture.
 
 Anyways, so far I've tested (or not) the following parts:
 
