@@ -5,23 +5,23 @@
 
 // Configure a DMA channel for one-shot memory-to-peripheral
 // transfers, with given sizes/priority/addresses/counts.
-void dma_config_tx_single( uint32_t dmax, int chan, uint32_t data_src,
-                           uint32_t data_dst, uint16_t data_len,
-                           int periph, int priority,
-                           int word_size, int tcie ) {
+void dma_config_tx( uint32_t dmax, int chan, uint32_t data_src,
+                    uint32_t data_dst, uint16_t data_len,
+                    int periph, int priority,
+                    int word_size, int circ, int tcie ) {
   // Calculate DMA struct memory addresses from DMAx and Channel #.
   DMA_Channel_TypeDef* DMA_CHx = ( DMA_Channel_TypeDef* )( dmax + 0x08 + ( 0x14 * ( chan - 1 ) ) );
   DMA_Request_TypeDef* DMA_RQx = ( DMA_Request_TypeDef* )( dmax + 0xA8 );
   // Configure DMA channel settings.
   // * Memory-to-peripheral.
-  // * Circular mode disabled.
+  // * Circular mode depends on input.
   // * Increment memory pointer, don't increment periph ptr.
   // * Data size depends on input (0 = 8b, 1 = 16b, 2 = 32b).
   // * Priority depends on input.
   // * Enable 'transfer complete' interrupt if 'tcie' input != 0.
   DMA_CHx->CCR &= ~( DMA_CCR_MEM2MEM |
                      DMA_CCR_PL |
-                     DMA_CCR_CIRC |
+                     ( !!circ ) << DMA_CCR_CIRC_Pos |
                      DMA_CCR_MSIZE |
                      DMA_CCR_PSIZE |
                      DMA_CCR_PINC |

@@ -16,6 +16,13 @@
 // BSP include.
 #include "hal/motomate_v1.h"
 
+// Audio buffers and testing values.
+volatile int amp_div = 1;
+volatile int cur_samples = 32;
+volatile int should_play = 0;
+volatile int cur_hz = 440;
+volatile uint16_t SINE_WAVE[ MAX_SINE_SAMPLES ];
+
 // 320x240-pixel 16-bit (RGB-565) framebuffer.
 // Note: it's 150KB of RAM.
 volatile uint16_t FRAMEBUFFER[ ILI9341_A ];

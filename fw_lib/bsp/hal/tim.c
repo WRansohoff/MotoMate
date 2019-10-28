@@ -58,3 +58,23 @@ void timer_pwm_out( TIM_TypeDef* TIMx, int channel,
   // Start the timer.
   TIMx->CR1     |=  ( TIM_CR1_CEN );
 }
+
+// Setup a timer to produce 'trigger output' updates
+// at a given frequency.
+void timer_periodic_trgo( TIM_TypeDef* TIMx, int freq_hz ) {
+  // Set the timer frequencyh such that it updates every N Hz.
+  // (N should be > X*10^2 to avoid overflowing the ARR register)
+  TIMx->PSC  =  ( 0x0000 );
+  TIMx->ARR  =  ( SystemCoreClock / ( freq_hz * cur_samples ) );
+  // Enable trigger output on timer update events.
+  TIMx->CR2 &= ~( TIM_CR2_MMS );
+  TIMx->CR2 |=  ( 0x2 << TIM_CR2_MMS_Pos );
+  // Start the timer.
+  TIMx->CR1 |=  ( TIM_CR1_CEN );
+}
+
+// Adjust the frequency of a timer which is currently producing
+// periodic 'trigger output' updates.
+void timer_adjust_trgo( TIM_TypeDef* TIMx, int freq_hz ) {
+  TIMx->ARR  =  ( SystemCoreClock / ( freq_hz * cur_samples ) );
+}

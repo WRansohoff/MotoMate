@@ -24,6 +24,9 @@
 #include "ufb.h"
 
 // Variables that are defined elsewhere.
+extern volatile int cur_samples;
+extern volatile int cur_hz;
+extern volatile uint16_t SINE_WAVE[ MAX_SINE_SAMPLES ];
 extern volatile uint16_t FRAMEBUFFER[ ILI9341_A ];
 extern volatile float tft_brightness;
 extern ringbuf gps_rb;
@@ -32,7 +35,7 @@ extern uint32_t SystemCoreClock;
 /*
  * Initialize the board's pins and peripherals
  * to prepare it for use.
- * TODO (short-term): DAC, ADCs.
+ * TODO (short-term): ADCs.
  * TODO (long-term): USB, SD/MMC, aux I2C/UARTs, touch screen pins.
  */
 static inline void board_init( void ) {
@@ -40,12 +43,13 @@ static inline void board_init( void ) {
   clock_init();
 
   // Enable peripherals: GPIOA, GPIOB, GPIOC,
-  // UART4, DMA1, SPI1, TIM3, SYSCFG.
+  // UART4, DAC1, DMA1, SPI1, TIM3, SYSCFG.
   RCC->AHB1ENR  |=  ( RCC_AHB1ENR_DMA1EN );
   RCC->AHB2ENR  |=  ( RCC_AHB2ENR_GPIOAEN |
                       RCC_AHB2ENR_GPIOBEN |
                       RCC_AHB2ENR_GPIOCEN );
-  RCC->APB1ENR1 |=  ( RCC_APB1ENR1_TIM3EN |
+  RCC->APB1ENR1 |=  ( RCC_APB1ENR1_DAC1EN |
+                      RCC_APB1ENR1_TIM3EN |
                       RCC_APB1ENR1_UART4EN );
   RCC->APB2ENR  |=  ( RCC_APB2ENR_SPI1EN |
                       RCC_APB2ENR_SYSCFGEN );
@@ -58,6 +62,8 @@ static inline void board_init( void ) {
   // PA0, PA1: Alt. Func. #8, low-speed (UART4 TX, RX)
   gpio_af_setup( GPIOA, 0, 8, 0 );
   gpio_af_setup( GPIOA, 1, 8, 0 );
+  // PA4: Analog (DAC1, Channel 1)
+  gpio_setup( GPIOA, 4, GPIO_ANALOG );
   // PB1: Alt. Func. #2 (TIM3_CH4), low-speed (TFT backlight control)
   gpio_af_setup( GPIOB, 1, 2, 0 );
   // PB0: Push-pull output (TFT CS pin)
@@ -158,16 +164,40 @@ static inline void board_init( void ) {
   // with a receive timeout of 10 cycles.
   uart_on( UART4, 9600, 10 );
 
+  // Set the DAC sine wave buffer to 0's ('should_play = 0' at boot).
+  for ( int i = 0; i < MAX_SINE_SAMPLES; ++i ) {
+    SINE_WAVE[ i ] = 0;
+  }
+
+  // DMA configuration (DMA1, channel 3: SPI1 transmit).
+  dma_config_tx( DMA1_BASE, 3,
+                 ( uint32_t )&FRAMEBUFFER,
+                 ( uint32_t )&( SPI1->DR ),
+                 ( uint16_t )( ILI9341_A / 2 ),
+                 1, DMA_PRIORITY_HI, DMA_SIZE_16b, 0, 1 );
+  // Configure DMA1, channel4 for audio DAC transfers.
+  dma_config_tx( DMA1_BASE, 4,
+                 ( uint32_t )&SINE_WAVE,
+                 ( uint32_t )&( DAC1->DHR12R1 ),
+                 ( uint16_t )( cur_samples ),
+                 5, DMA_PRIORITY_MID, DMA_SIZE_16b, 1, 0 );
+
   // Set Timer 3, Channel 4 to a 1MHz PWM signal
   // with the current display brightness.
   timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
+  // Configure TIM7 to trigger sending audio samples to the DAC.
+  timer_periodic_trgo( TIM7, cur_hz );
 
-  // DMA configuration (DMA1, channel 3).
-  dma_config_tx_single( DMA1_BASE, 3,
-                        ( uint32_t )&FRAMEBUFFER,
-                        ( uint32_t )&( SPI1->DR ),
-                        ( uint16_t )( ILI9341_A / 2 ),
-                        1, DMA_PRIORITY_HI, DMA_SIZE_16b, 1 );
+  // Setup DAC1 for sending audio samples.
+  // Set trigger source to TIM7 TRGO (TRiGger Output).
+  DAC1->CR &= ~( DAC_CR_TSEL1 );
+  DAC1->CR |=  ( 0x2 << DAC_CR_TSEL1_Pos );
+  // Enable DAC DMA requests for channel 1.
+  DAC1->CR |=  ( DAC_CR_DMAEN1 );
+  // Enable DAC channel 1.
+  DAC1->CR |=  ( DAC_CR_EN1 );
+  // (Initialize display before enabling DAC triggers to
+  //  allow time for the sampling to stabilize.)
 
   // Setup SPI1 for communicating with the TFT.
   spi_host_init( SPI1, 0, 1 );
@@ -175,8 +205,13 @@ static inline void board_init( void ) {
   // Send initialization commands to the display.
   ili9341_init( SPI1 );
 
-  // Enable DMA1 Channel 3.
+  // Enable DMA1, Channel 3.
   DMA1_Channel3->CCR |= ( DMA_CCR_EN );
+  // Enable DMA1, Channel 4.
+  //DMA1_Channel4->CCR |= ( DMA_CCR_EN );
+
+  // Enable the DAC timer trigger.
+  //DAC1->CR |=  ( DAC_CR_TEN1 );
 }
 
 #endif

@@ -32,6 +32,9 @@
 #define BTN_MODE        ( 8 )
 #define BTN_BACK        ( 14 )
 
+// Maximum / minimum number of samples for an audio sine wave.
+#define MIN_SINE_SAMPLES ( 16 )
+#define MAX_SINE_SAMPLES ( 256 )
 
 // Length of ringbuffer to hold data received from the GPS module.
 #define GPS_RINGBUF_LEN ( 1024 )
