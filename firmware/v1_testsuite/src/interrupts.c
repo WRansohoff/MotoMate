@@ -196,8 +196,8 @@ void EXTI10_15_IRQ_handler( void ) {
     if ( cur_mode == MODE_GPS_RX ||
          cur_mode == MODE_AUDIO ) {
       // Return to the main menu and reset selection cursor. (TODO)
-      //cur_mode = MODE_MAIN_MENU;
-      //cur_selection = SEL_MAIN_GPS_RX;
+      cur_mode = MODE_MAIN_MENU;
+      cur_selection = SEL_MAIN_GPS_RX;
     }
   }
 }

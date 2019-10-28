@@ -66,8 +66,24 @@ int main(void) {
     cur_color = rgb565( bg_r, bg_g, bg_b );
     ufb_fill_rect( &framebuffer, cur_color, 0, 0, 240, 320 );
 
-    // Print the current 'GPS receive' ringbuffer.
-    ufb_draw_lines( &framebuffer, ( cur_color ^ 0xFFFF ), 8, 0, ( char* )gps_rb.buf, 1, UFB_ORIENT_H );
+    if ( cur_mode == MODE_MAIN_MENU ) {
+      // Draw text for each menu item.
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ), 12, 16, "Test raw NMEA GPS Messages", 1, UFB_ORIENT_H );
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ), 22, 16, "Test speaker audio", 1, UFB_ORIENT_H );
+      // Draw a triangle next to the current selection.
+      int tri_base = 6;
+      if ( cur_selection == SEL_MAIN_AUDIO ) { tri_base = 16; }
+      ufb_fill_rect( &framebuffer, ( cur_color ^ 0xFFFF ), tri_base, 4, 6, 2 );
+      ufb_fill_rect( &framebuffer, ( cur_color ^ 0xFFFF ), tri_base + 1, 6, 4, 2 );
+      ufb_fill_rect( &framebuffer, ( cur_color ^ 0xFFFF ), tri_base + 2, 8, 2, 2 );
+    }
+    else if ( cur_mode == MODE_GPS_RX ) {
+      // Print the current 'GPS receive' ringbuffer.
+      ufb_draw_lines( &framebuffer, ( cur_color ^ 0xFFFF ), 8, 0, ( char* )gps_rb.buf, 1, UFB_ORIENT_H );
+    }
+    else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
 
     // Delay briefly.
     delay_cycles( 5000000 );
