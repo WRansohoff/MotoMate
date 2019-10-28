@@ -40,7 +40,7 @@ Anyways, so far I've tested (or not) the following parts:
 
 * microSD card: Not tested.
 
-* Buttons: Not tested. I don't have any excuse for not testing these, it's one of the simplest things to test. This should be the next thing on my list...
+* Buttons: Tested using falling-edge interrupts with the pins configured as inputs with pull-up resistors enabled. These low-profile buttons are really designed to be used with a case that has plastic or rubber 'pegs' connected to larger buttons, though.
 
 * Auxiliary UARTs and I2C: Not tested.
 
