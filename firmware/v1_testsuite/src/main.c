@@ -46,6 +46,11 @@ volatile uint16_t bg_b = 0x1F;
 volatile int cur_mode = MODE_GPS_RX;
 // Current menu selection item.
 volatile int cur_selection = SEL_MAIN_GPS_RX;
+// Variable to track whether a new button press was received.
+// TODO: Use a queue?
+volatile int new_button_press = BTN_NONE;
+// Variable to track whether a new set of GPS messages are ready.
+volatile int new_gps_messages = 0;
 
 // Global variable to hold the core clock speed in Hertz.
 uint32_t SystemCoreClock = 4000000;
@@ -62,6 +67,10 @@ int main(void) {
   // Main application loop.
   uint16_t cur_color;
   while (1) {
+    // Wait for an ongoing display DMA transfer operation to complete
+    // before modifying the framebuffer.
+    while ( ( DMA1_Channel3->CCR & DMA_CCR_EN ) ) { __WFI(); }
+
     // Clear the display to the currently-selected background color.
     cur_color = rgb565( bg_r, bg_g, bg_b );
     ufb_fill_rect( &framebuffer, cur_color, 0, 0, 240, 320 );
@@ -85,10 +94,24 @@ int main(void) {
       // TODO
     }
 
-    // Delay briefly.
-    delay_cycles( 5000000 );
+    // Re-trigger a DMA transfer to draw to the display.
+    DMA1_Channel3->CCR |=  ( DMA_CCR_EN );
 
-    // Debug: toggle the 'heartbeat' LED.
-    //gpio_toggle( GPIOA, 15 );
+    if ( cur_mode == MODE_MAIN_MENU || cur_mode == MODE_AUDIO ) {
+      // Wait for a button press before continuing.
+      while ( new_button_press == BTN_NONE ) { __WFI(); }
+      // TODO: It would be better to process button inputs here,
+      // instead of in the interrupt handlers which should be short.
+      new_button_press = BTN_NONE;
+    }
+    else if ( cur_mode == MODE_GPS_RX ) {
+      // Wait for a button press or new GPS messages before continuing.
+      while ( new_button_press == BTN_NONE &&
+              !new_gps_messages ) {
+        __WFI();
+      }
+      new_button_press = BTN_NONE;
+      new_gps_messages = 0;
+    }
   }
 }

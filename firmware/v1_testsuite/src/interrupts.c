@@ -25,6 +25,8 @@ extern ringbuf gps_rb;
 extern volatile uint16_t bg_r, bg_g, bg_b;
 extern volatile int cur_mode;
 extern volatile int cur_selection;
+extern volatile int new_button_press;
+extern volatile int new_gps_messages;
 
 // DMA1, Channel 3: SPI transmit.
 void DMA1_chan3_IRQ_handler( void ) {
@@ -37,16 +39,18 @@ void DMA1_chan3_IRQ_handler( void ) {
     DMA1->IFCR |=  ( DMA_IFCR_CTCIF3 );
     // Disable the DMA channel.
     DMA1_Channel3->CCR &= ~( DMA_CCR_EN );
+    // Update the 'transfer length' field.
+    DMA1_Channel3->CNDTR = ( uint16_t )( ILI9341_A / 2 );
     // Update the source address and refill the 'count' register.
     if ( DMA1_Channel3->CMAR >= ( uint32_t )&( FRAMEBUFFER[ ILI9341_A / 2 ] ) ) {
       DMA1_Channel3->CMAR  = ( uint32_t )&FRAMEBUFFER;
+      // Transfer is complete; wait for a trigger to re-draw.
     }
     else {
       DMA1_Channel3->CMAR  = ( uint32_t )&( FRAMEBUFFER[ ILI9341_A / 2 ] );
+      // Re-enable the DMA channel to resume the transfer.
+      DMA1_Channel3->CCR |=  ( DMA_CCR_EN );
     }
-    DMA1_Channel3->CNDTR = ( uint16_t )( ILI9341_A / 2 );
-    // Re-enable the DMA channel to resume the transfer.
-    DMA1_Channel3->CCR |=  ( DMA_CCR_EN );
   }
 }
 
@@ -65,6 +69,8 @@ void UART4_IRQ_handler( void ) {
     ringbuf_write( gps_rb, '\0' );
     gps_rb.pos = 0;
     gps_rb.ext = 0;
+    // Mark that new GPS messages are ready.
+    new_gps_messages = 1;
     // Acknowledge the interrupt.
     UART4->ICR |=  ( USART_ICR_RTOCF );
   }
@@ -75,6 +81,9 @@ void EXTI3_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 3 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 3 );
+    // Mark the button press.
+    new_button_press = BTN_UP;
+    // Process the button press.
     if ( cur_mode == MODE_MAIN_MENU ) {
       // Switch menu selection.
       // Shortcut: decrement by 1 unless it's at the min value.
@@ -100,6 +109,9 @@ void EXTI4_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 4 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 4 );
+    // Mark the button press.
+    new_button_press = BTN_DOWN;
+    // Process the button press.
     if ( cur_mode == MODE_MAIN_MENU ) {
       // Switch menu selection.
       // Shortcut: increment by 1 unless it's at the max value.
@@ -126,6 +138,9 @@ void EXTI5_9_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 5 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 5 );
+    // Mark the button press.
+    new_button_press = BTN_RIGHT;
+    // Process the button press.
     if ( cur_mode == MODE_MAIN_MENU ) {
       // Enter the current menu selection.
       if ( cur_selection == SEL_MAIN_GPS_RX ) {
@@ -149,6 +164,9 @@ void EXTI5_9_IRQ_handler( void ) {
   else if ( EXTI->PR1 & ( 1 << 6 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 6 );
+    // Mark the button press.
+    new_button_press = BTN_LEFT;
+    // Process the button press.
     // Set the background color to green.
     bg_r = 0x00;
     bg_g = 0x2F;
@@ -158,6 +176,9 @@ void EXTI5_9_IRQ_handler( void ) {
   else if ( EXTI->PR1 & ( 1 << 7 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 7 );
+    // Mark the button press.
+    new_button_press = BTN_CENTER;
+    // Process the button press.
     if ( cur_mode == MODE_MAIN_MENU ) {
       // Enter the current menu selection.
       if ( cur_selection == SEL_MAIN_GPS_RX ) {
@@ -181,6 +202,9 @@ void EXTI5_9_IRQ_handler( void ) {
   else if ( EXTI->PR1 & ( 1 << 8 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 8 );
+    // Mark the button press.
+    new_button_press = BTN_MODE;
+    // Process the button press.
     // Set the color to teal.
     bg_r = 0x00;
     bg_g = 0x0F;
@@ -193,6 +217,9 @@ void EXTI10_15_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 14 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 14 );
+    // Mark the button press.
+    new_button_press = BTN_BACK;
+    // Process the button press.
     if ( cur_mode == MODE_GPS_RX ||
          cur_mode == MODE_AUDIO ) {
       // Return to the main menu and reset selection cursor. (TODO)
