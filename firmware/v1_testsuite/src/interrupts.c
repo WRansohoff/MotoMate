@@ -16,7 +16,7 @@
 #include "ufb.h"
 
 // Declarations for values that are defined somewhere else.
-extern uint16_t FRAMEBUFFER[ ILI9341_A ];
+extern volatile uint16_t FRAMEBUFFER[ ILI9341_A ];
 extern ringbuf gps_rb;
 extern volatile uint16_t color;
 
