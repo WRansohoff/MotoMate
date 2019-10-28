@@ -75,7 +75,7 @@ int main(void) {
   NVIC_SetPriority( UART4_IRQn, uart_pri_encoding );
   NVIC_EnableIRQ( UART4_IRQn );
 
-  // Setup GPIO pin(s).
+  // Setup GPIO pins.
   // PB1: Alt. Func. #2 (TIM3_CH4), low-speed.
   gpio_af_setup( GPIOB, 1, 2, 0 );
   // PB0: Push-pull output (CS pin)
@@ -117,7 +117,7 @@ int main(void) {
                     USART_CR1_RTOIE |
                     USART_CR1_TE );
 
-  // Set Timer 3, Channel 4 to a 1MHz PWM signal with 30% duty cycle.
+  // Set Timer 3, Channel 4 to a 1MHz PWM signal with 5% duty cycle.
   timer_pwm_out( TIM3, 4, 0.05, 1000000 );
 
   // DMA configuration (DMA1, channel 3).
@@ -136,8 +136,9 @@ int main(void) {
   // Enable DMA1 Channel 3.
   DMA1_Channel3->CCR |= ( DMA_CCR_EN );
 
-  // Done; now just alternate between solid colors to get
-  // a feel for the refresh speed.
+  // Done; now periodically update the framebuffer
+  // with the contents of the GPS UART receive buffer.
+  // (The buffer is populated in src/interrupts.c)
   uint16_t color = rgb565( 0x1F, 0x00, 0x1F );
   while (1) {
     // Clear the display.

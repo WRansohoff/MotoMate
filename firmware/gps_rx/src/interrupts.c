@@ -45,11 +45,13 @@ void DMA1_chan3_IRQ_handler( void ) {
 
 // UART4: Communication with GPS transceiver.
 void UART4_IRQ_handler( void ) {
+  // 'Receive register not empty' interrupt.
   if ( UART4->ISR & USART_ISR_RXNE ) {
     // Copy new data into the ringbuffer.
     char c = UART4->RDR;
     ringbuf_write( gps_rb, c );
   }
+  // 'Receive timeout' interrupt.
   if ( UART4->ISR & USART_ISR_RTOF ) {
     // Mark the end of the message in the ringbuffer and reset
     // its position/extent to 0.
