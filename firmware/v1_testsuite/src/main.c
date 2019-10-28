@@ -10,6 +10,12 @@
 #include "ringbuf.h"
 #include "ufb.h"
 
+// Global definitions.
+#include "global.h"
+
+// BSP include.
+#include "hal/motomate_v1.h"
+
 // 320x240-pixel 16-bit (RGB-565) framebuffer.
 // Note: it's 150KB of RAM.
 volatile uint16_t FRAMEBUFFER[ ILI9341_A ];
@@ -22,7 +28,6 @@ uFB framebuffer = {
 volatile float tft_brightness = 0.67;
 
 // Ringbuffer for holding data sent by the GPS module.
-#define GPS_RINGBUF_LEN ( 1024 )
 char gps_rb_buf[ GPS_RINGBUF_LEN + 1 ];
 ringbuf gps_rb = {
   len: GPS_RINGBUF_LEN,
@@ -38,20 +43,12 @@ volatile uint16_t bg_b = 0x1F;
 
 // Which 'mode' the application is in. Basically, which menu to
 // display or which application to run.
-#define MODE_MAIN_MENU  ( 0 ) /* 'Main menu' */
-#define MODE_GPS_RX     ( 1 ) /* 'View messages from GPS module' */
-#define MODE_AUDIO      ( 2 ) /* 'Test speaker and audio amp' */
-volatile int cur_mode = MODE_MAIN_MENU;
+volatile int cur_mode = MODE_GPS_RX;
 // Current menu selection item.
-#define SEL_MAIN_GPS_RX ( 0 ) /* 'View messages from GPS module' */
-#define SEL_MAIN_AUDIO  ( 1 ) /* 'Test speaker and audio amp' */
 volatile int cur_selection = SEL_MAIN_GPS_RX;
 
 // Global variable to hold the core clock speed in Hertz.
 uint32_t SystemCoreClock = 4000000;
-
-// BSP include.
-#include "hal/motomate_v1.h"
 
 /**
  * Main program.

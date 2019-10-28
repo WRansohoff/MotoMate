@@ -10,15 +10,21 @@
 
 // HAL includes.
 #include "hal/rcc.h"
+
 // BSP includes.
 #include "ili9341.h"
 #include "ringbuf.h"
 #include "ufb.h"
 
+// Global definitions.
+#include "global.h"
+
 // Declarations for values that are defined somewhere else.
 extern volatile uint16_t FRAMEBUFFER[ ILI9341_A ];
 extern ringbuf gps_rb;
 extern volatile uint16_t bg_r, bg_g, bg_b;
+extern volatile int cur_mode;
+extern volatile int cur_selection;
 
 // DMA1, Channel 3: SPI transmit.
 void DMA1_chan3_IRQ_handler( void ) {
@@ -69,10 +75,23 @@ void EXTI3_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 3 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 3 );
-    // Set the color to purple.
-    bg_r = 0x1F;
-    bg_g = 0x00;
-    bg_b = 0x1F;
+    if ( cur_mode == MODE_MAIN_MENU ) {
+      // Switch menu selection.
+      // Shortcut: decrement by 1 unless it's at the min value.
+      if ( cur_selection == SEL_MAIN_GPS_RX ) {
+        cur_selection = SEL_MAIN_AUDIO;
+      }
+      else { --cur_selection; }
+    }
+    else if ( cur_mode == MODE_GPS_RX ) {
+      // Set background the color to purple.
+      bg_r = 0x1F;
+      bg_g = 0x00;
+      bg_b = 0x1F;
+    }
+    else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
   }
 }
 
@@ -81,39 +100,84 @@ void EXTI4_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 4 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 4 );
-    // Set the color to yellow.
-    bg_r = 0x1F;
-    bg_g = 0x0C;
-    bg_b = 0x00;
+    if ( cur_mode == MODE_MAIN_MENU ) {
+      // Switch menu selection.
+      // Shortcut: increment by 1 unless it's at the max value.
+      if ( cur_selection == SEL_MAIN_AUDIO ) {
+        cur_selection = SEL_MAIN_GPS_RX;
+      }
+      else { ++cur_selection; }
+    }
+    else if ( cur_mode == MODE_GPS_RX ) {
+      // Set the background color to yellow.
+      bg_r = 0x1F;
+      bg_g = 0x0C;
+      bg_b = 0x00;
+    }
+    else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
   }
 }
 
 // EXTI channels 5-9: Nav switch 'right / left / press', and 'mode'.
 void EXTI5_9_IRQ_handler( void ) {
+  // PB5: Nav switch 'right'.
   if ( EXTI->PR1 & ( 1 << 5 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 5 );
-    // Set the color to red.
-    bg_r = 0x1F;
-    bg_g = 0x00;
-    bg_b = 0x00;
+    if ( cur_mode == MODE_MAIN_MENU ) {
+      // Enter the current menu selection.
+      if ( cur_selection == SEL_MAIN_GPS_RX ) {
+        cur_mode = MODE_GPS_RX;
+      }
+      else if ( cur_selection == SEL_MAIN_AUDIO ) {
+        cur_mode = MODE_AUDIO;
+      }
+    }
+    else if ( cur_mode == MODE_GPS_RX ) {
+      // Set the background color to red.
+      bg_r = 0x1F;
+      bg_g = 0x00;
+      bg_b = 0x00;
+    }
+    else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
   }
+  // PC6: Nav switch 'left'.
   else if ( EXTI->PR1 & ( 1 << 6 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 6 );
-    // Set the color to green.
+    // Set the background color to green.
     bg_r = 0x00;
-    bg_g = 0x3F;
-    bg_b = 0x00;
+    bg_g = 0x2F;
+    bg_b = 0x08;
   }
+  // PC7: Nav switch 'press / center'.
   else if ( EXTI->PR1 & ( 1 << 7 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 7 );
-    // Set the color to blue.
-    bg_r = 0x00;
-    bg_g = 0x00;
-    bg_b = 0x1F;
+    if ( cur_mode == MODE_MAIN_MENU ) {
+      // Enter the current menu selection.
+      if ( cur_selection == SEL_MAIN_GPS_RX ) {
+        cur_mode = MODE_GPS_RX;
+      }
+      else if ( cur_selection == SEL_MAIN_AUDIO ) {
+        cur_mode = MODE_AUDIO;
+      }
+    }
+    else if ( cur_mode == MODE_GPS_RX ) {
+      // Set the background color to blue.
+      bg_r = 0x00;
+      bg_g = 0x00;
+      bg_b = 0x1F;
+    }
+    else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
   }
+  // PA8: 'Mode'
   else if ( EXTI->PR1 & ( 1 << 8 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 8 );
@@ -129,9 +193,11 @@ void EXTI10_15_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 14 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 14 );
-    // Set the color to white.
-    bg_r = 0x1F;
-    bg_g = 0x3F;
-    bg_b = 0x1F;
+    if ( cur_mode == MODE_GPS_RX ||
+         cur_mode == MODE_AUDIO ) {
+      // Return to the main menu and reset selection cursor. (TODO)
+      //cur_mode = MODE_MAIN_MENU;
+      //cur_selection = SEL_MAIN_GPS_RX;
+    }
   }
 }

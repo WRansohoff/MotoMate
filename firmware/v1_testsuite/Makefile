@@ -88,6 +88,7 @@ C_SRC    += ./../../fw_lib/util/ili9341.c
 C_SRC    += ./../../fw_lib/util/ufb.c
 
 INCLUDE   = -I./
+INCLUDE  += -I./src
 INCLUDE  += -I./device_headers
 INCLUDE  += -I./../../fw_lib/util
 INCLUDE  += -I./../../fw_lib/bsp
