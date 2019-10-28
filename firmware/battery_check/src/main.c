@@ -14,6 +14,9 @@
 #include "ili9341.h"
 #include "ufb.h"
 
+// Dummy 'current audio samples' value for HAL library.
+volatile int cur_samples = 32;
+
 // 320x240-pixel 16-bit (RGB-565) framebuffer. Note: it's 150KB of RAM.
 uint16_t FRAMEBUFFER[ ILI9341_A ];
 uFB framebuffer = {
@@ -91,11 +94,11 @@ int main(void) {
   ADC1->CR   |=   ( ADC_CR_ADEN );
 
   // DMA configuration (DMA1, channel 3).
-  dma_config_tx_single( DMA1_BASE, 3,
-                        ( uint32_t )&FRAMEBUFFER,
-                        ( uint32_t )&( SPI1->DR ),
-                        ( uint16_t )( ILI9341_A / 2 ),
-                        1, DMA_PRIORITY_HI, DMA_SIZE_16b, 1 );
+  dma_config_tx( DMA1_BASE, 3,
+                 ( uint32_t )&FRAMEBUFFER,
+                 ( uint32_t )&( SPI1->DR ),
+                 ( uint16_t )( ILI9341_A / 2 ),
+                 1, DMA_PRIORITY_HI, DMA_SIZE_16b, 0, 1 );
 
   // Setup SPI1 for communicating with the TFT.
   spi_host_init( SPI1, 0, 1 );
