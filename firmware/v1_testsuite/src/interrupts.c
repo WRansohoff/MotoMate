@@ -88,7 +88,7 @@ void EXTI3_IRQ_handler( void ) {
       // Switch menu selection.
       // Shortcut: decrement by 1 unless it's at the min value.
       if ( cur_selection == SEL_MAIN_GPS_RX ) {
-        cur_selection = SEL_MAIN_AUDIO;
+        cur_selection = SEL_MAIN_USB;
       }
       else { --cur_selection; }
     }
@@ -99,6 +99,18 @@ void EXTI3_IRQ_handler( void ) {
       bg_b = 0x1F;
     }
     else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_BACKLIGHT ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_BATTERY ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_SD_CARD ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_USB ) {
       // TODO
     }
   }
@@ -115,7 +127,7 @@ void EXTI4_IRQ_handler( void ) {
     if ( cur_mode == MODE_MAIN_MENU ) {
       // Switch menu selection.
       // Shortcut: increment by 1 unless it's at the max value.
-      if ( cur_selection == SEL_MAIN_AUDIO ) {
+      if ( cur_selection == SEL_MAIN_USB ) {
         cur_selection = SEL_MAIN_GPS_RX;
       }
       else { ++cur_selection; }
@@ -127,6 +139,18 @@ void EXTI4_IRQ_handler( void ) {
       bg_b = 0x00;
     }
     else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_BACKLIGHT ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_BATTERY ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_SD_CARD ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_USB ) {
       // TODO
     }
   }
@@ -149,6 +173,20 @@ void EXTI5_9_IRQ_handler( void ) {
       else if ( cur_selection == SEL_MAIN_AUDIO ) {
         cur_mode = MODE_AUDIO;
       }
+      else if ( cur_selection == SEL_MAIN_BACKLIGHT ) {
+        cur_mode = MODE_BACKLIGHT;
+      }
+      else if ( cur_selection == SEL_MAIN_BATTERY ) {
+        cur_mode = MODE_BATTERY;
+      }
+      else if ( cur_selection == SEL_MAIN_SD_CARD ) {
+        // TODO
+        //cur_mode = MODE_SD_CARD;
+      }
+      else if ( cur_selection == SEL_MAIN_USB ) {
+        // TODO
+        //cur_mode = MODE_USB;
+      }
     }
     else if ( cur_mode == MODE_GPS_RX ) {
       // Set the background color to red.
@@ -157,6 +195,18 @@ void EXTI5_9_IRQ_handler( void ) {
       bg_b = 0x00;
     }
     else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_BACKLIGHT ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_BATTERY ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_SD_CARD ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_USB ) {
       // TODO
     }
   }
@@ -187,6 +237,20 @@ void EXTI5_9_IRQ_handler( void ) {
       else if ( cur_selection == SEL_MAIN_AUDIO ) {
         cur_mode = MODE_AUDIO;
       }
+      else if ( cur_selection == SEL_MAIN_BACKLIGHT ) {
+        cur_mode = MODE_BACKLIGHT;
+      }
+      else if ( cur_selection == SEL_MAIN_BATTERY ) {
+        cur_mode = MODE_BATTERY;
+      }
+      else if ( cur_selection == SEL_MAIN_SD_CARD ) {
+        // TODO
+        //cur_mode = MODE_SD_CARD;
+      }
+      else if ( cur_selection == SEL_MAIN_USB ) {
+        // TODO
+        //cur_mode = MODE_USB;
+      }
     }
     else if ( cur_mode == MODE_GPS_RX ) {
       // Set the background color to blue.
@@ -195,6 +259,18 @@ void EXTI5_9_IRQ_handler( void ) {
       bg_b = 0x1F;
     }
     else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_BACKLIGHT ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_BATTERY ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_SD_CARD ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_USB ) {
       // TODO
     }
   }
@@ -221,7 +297,11 @@ void EXTI10_15_IRQ_handler( void ) {
     new_button_press = BTN_BACK;
     // Process the button press.
     if ( cur_mode == MODE_GPS_RX ||
-         cur_mode == MODE_AUDIO ) {
+         cur_mode == MODE_AUDIO ||
+         cur_mode == MODE_BACKLIGHT ||
+         cur_mode == MODE_BATTERY ||
+         cur_mode == MODE_SD_CARD ||
+         cur_mode == MODE_USB ) {
       // Return to the main menu and reset selection cursor. (TODO)
       cur_mode = MODE_MAIN_MENU;
       cur_selection = SEL_MAIN_GPS_RX;
