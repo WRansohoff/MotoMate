@@ -9,6 +9,7 @@
 #include "hal/rcc.h"
 #include "hal/spi.h"
 #include "hal/tim.h"
+#include "hal/uart.h"
 // BSP includes.
 #include "ili9341.h"
 #include "ringbuf.h"
@@ -37,14 +38,6 @@ volatile uint16_t color = rgb565( 0x1F, 0x00, 0x1F );
 
 // Global variable to hold the core clock speed in Hertz.
 uint32_t SystemCoreClock = 4000000;
-
-// Send a string over UART (blocking)
-void uart_tx_str( USART_TypeDef* UARTx, const unsigned char* str, size_t len ) {
-  while( len-- ) {
-    while( !( UARTx->ISR & USART_ISR_TXE ) ) {};
-    UARTx->TDR = *str++;
-  }
-}
 
 /**
  * Main program.
@@ -166,22 +159,9 @@ int main(void) {
   // Ensure there is always a null terminator at the end of the
   // UART receive ringbuffer.
   gps_rb.buf[ GPS_RINGBUF_LEN ] = '\0';
-  // Initialize UART4 for 9600-baud communication.
-  // Set baud rate.
-  UART4->BRR   =  ( SystemCoreClock / 9600 );
-  // Set and enable RX timeout.
-  // I think that this tells it to trigger a timeout after 10
-  // 1-bit-long cycles have elapsed. So in this case, every 960Hz?
-  UART4->RTOR &= ~( USART_RTOR_RTO );
-  UART4->RTOR |=  ( 10 << USART_RTOR_RTO_Pos );
-  UART4->CR2  |=  ( USART_CR2_RTOEN );
-  // Enable the TX and RX lines, the RX interrupt,
-  // the RX timeout interrupt, and the peripheral.
-  UART4->CR1  |=  ( USART_CR1_UE |
-                    USART_CR1_RE |
-                    USART_CR1_RXNEIE |
-                    USART_CR1_RTOIE |
-                    USART_CR1_TE );
+  // Initialize UART4 for 9600-baud communication
+  // with a receive timeout of 10 cycles.
+  uart_on( UART4, 9600, 10 );
 
   // Set Timer 3, Channel 4 to a 1MHz PWM signal with 30% duty cycle.
   timer_pwm_out( TIM3, 4, 0.3, 1000000 );

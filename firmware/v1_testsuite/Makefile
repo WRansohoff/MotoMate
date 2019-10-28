@@ -83,6 +83,7 @@ C_SRC    += ./../../fw_lib/bsp/hal/gpio.c
 C_SRC    += ./../../fw_lib/bsp/hal/rcc.c
 C_SRC    += ./../../fw_lib/bsp/hal/spi.c
 C_SRC    += ./../../fw_lib/bsp/hal/tim.c
+C_SRC    += ./../../fw_lib/bsp/hal/uart.c
 C_SRC    += ./../../fw_lib/util/ili9341.c
 C_SRC    += ./../../fw_lib/util/ufb.c
 
