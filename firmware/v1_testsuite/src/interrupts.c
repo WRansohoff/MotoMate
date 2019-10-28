@@ -18,7 +18,7 @@
 // Declarations for values that are defined somewhere else.
 extern volatile uint16_t FRAMEBUFFER[ ILI9341_A ];
 extern ringbuf gps_rb;
-extern volatile uint16_t color;
+extern volatile uint16_t bg_r, bg_g, bg_b;
 
 // DMA1, Channel 3: SPI transmit.
 void DMA1_chan3_IRQ_handler( void ) {
@@ -70,7 +70,9 @@ void EXTI3_IRQ_handler( void ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 3 );
     // Set the color to purple.
-    color = rgb565( 0x1F, 0x00, 0x1F );
+    bg_r = 0x1F;
+    bg_g = 0x00;
+    bg_b = 0x1F;
   }
 }
 
@@ -80,7 +82,9 @@ void EXTI4_IRQ_handler( void ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 4 );
     // Set the color to yellow.
-    color = rgb565( 0x1F, 0x0C, 0x00 );
+    bg_r = 0x1F;
+    bg_g = 0x0C;
+    bg_b = 0x00;
   }
 }
 
@@ -90,25 +94,33 @@ void EXTI5_9_IRQ_handler( void ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 5 );
     // Set the color to red.
-    color = rgb565( 0x1F, 0x00, 0x00 );
+    bg_r = 0x1F;
+    bg_g = 0x00;
+    bg_b = 0x00;
   }
   else if ( EXTI->PR1 & ( 1 << 6 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 6 );
     // Set the color to green.
-    color = rgb565( 0x00, 0x3F, 0x00 );
+    bg_r = 0x00;
+    bg_g = 0x3F;
+    bg_b = 0x00;
   }
   else if ( EXTI->PR1 & ( 1 << 7 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 7 );
     // Set the color to blue.
-    color = rgb565( 0x00, 0x00, 0x1F );
+    bg_r = 0x00;
+    bg_g = 0x00;
+    bg_b = 0x1F;
   }
   else if ( EXTI->PR1 & ( 1 << 8 ) ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 8 );
     // Set the color to teal.
-    color = rgb565( 0x00, 0x0F, 0x0F );
+    bg_r = 0x00;
+    bg_g = 0x0F;
+    bg_b = 0x0F;
   }
 }
 
@@ -118,6 +130,8 @@ void EXTI10_15_IRQ_handler( void ) {
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 14 );
     // Set the color to white.
-    color = rgb565( 0x1F, 0x3F, 0x1F );
+    bg_r = 0x1F;
+    bg_g = 0x3F;
+    bg_b = 0x1F;
   }
 }

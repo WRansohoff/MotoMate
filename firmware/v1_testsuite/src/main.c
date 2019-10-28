@@ -10,13 +10,16 @@
 #include "ringbuf.h"
 #include "ufb.h"
 
-// 320x240-pixel 16-bit (RGB-565) framebuffer. Note: it's 150KB of RAM.
+// 320x240-pixel 16-bit (RGB-565) framebuffer.
+// Note: it's 150KB of RAM.
 volatile uint16_t FRAMEBUFFER[ ILI9341_A ];
 uFB framebuffer = {
   w: ILI9341_W,
   h: ILI9341_H,
   buf: ( uint16_t* )&FRAMEBUFFER
 };
+// Float to store the desired display brightness (between [0.0, 1.0])
+volatile float tft_brightness = 0.67;
 
 // Ringbuffer for holding data sent by the GPS module.
 #define GPS_RINGBUF_LEN ( 1024 )
@@ -29,7 +32,20 @@ ringbuf gps_rb = {
 };
 
 // Solid color to set the display to; button presses will change this.
-volatile uint16_t color = rgb565( 0x1F, 0x00, 0x1F );
+volatile uint16_t bg_r = 0x1F;
+volatile uint16_t bg_g = 0x00;
+volatile uint16_t bg_b = 0x1F;
+
+// Which 'mode' the application is in. Basically, which menu to
+// display or which application to run.
+#define MODE_MAIN_MENU  ( 0 ) /* 'Main menu' */
+#define MODE_GPS_RX     ( 1 ) /* 'View messages from GPS module' */
+#define MODE_AUDIO      ( 2 ) /* 'Test speaker and audio amp' */
+volatile int cur_mode = MODE_MAIN_MENU;
+// Current menu selection item.
+#define SEL_MAIN_GPS_RX ( 0 ) /* 'View messages from GPS module' */
+#define SEL_MAIN_AUDIO  ( 1 ) /* 'Test speaker and audio amp' */
+volatile int cur_selection = SEL_MAIN_GPS_RX;
 
 // Global variable to hold the core clock speed in Hertz.
 uint32_t SystemCoreClock = 4000000;
@@ -47,14 +63,19 @@ int main(void) {
   board_init();
 
   // Main application loop.
+  uint16_t cur_color;
   while (1) {
     // Clear the display to the currently-selected background color.
-    ufb_fill_rect( &framebuffer, color, 0, 0, 240, 320 );
+    cur_color = rgb565( bg_r, bg_g, bg_b );
+    ufb_fill_rect( &framebuffer, cur_color, 0, 0, 240, 320 );
+
     // Print the current 'GPS receive' ringbuffer.
-    ufb_draw_lines( &framebuffer, ( color ^ 0xFFFF ), 8, 0, ( char* )gps_rb.buf, 1, UFB_ORIENT_H );
+    ufb_draw_lines( &framebuffer, ( cur_color ^ 0xFFFF ), 8, 0, ( char* )gps_rb.buf, 1, UFB_ORIENT_H );
+
     // Delay briefly.
     delay_cycles( 5000000 );
-    // Toggle the 'heartbeat' LED.
+
+    // Debug: toggle the 'heartbeat' LED.
     //gpio_toggle( GPIOA, 15 );
   }
 }

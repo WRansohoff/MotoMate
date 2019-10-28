@@ -25,6 +25,7 @@
 
 // Variables that are defined elsewhere.
 extern volatile uint16_t FRAMEBUFFER[ ILI9341_A ];
+extern volatile float tft_brightness;
 extern ringbuf gps_rb;
 extern uint32_t SystemCoreClock;
 
@@ -157,9 +158,9 @@ static inline void board_init( void ) {
   // with a receive timeout of 10 cycles.
   uart_on( UART4, 9600, 10 );
 
-  // Set Timer 3, Channel 4 to a 1MHz PWM signal with 30% duty cycle.
-  // (~1/3 brightness for the TFT display.)
-  timer_pwm_out( TIM3, 4, 0.3, 1000000 );
+  // Set Timer 3, Channel 4 to a 1MHz PWM signal
+  // with the current display brightness.
+  timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
 
   // DMA configuration (DMA1, channel 3).
   dma_config_tx_single( DMA1_BASE, 3,
