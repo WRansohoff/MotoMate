@@ -107,7 +107,14 @@ void redraw_fb( void ) {
       // Draw test title.
       ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
         232, 16, "Battery Reading:", 3, UFB_ORIENT_H );
-      // TODO: Draw ADC reading.
+      // Draw explanatory strings.
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
+        180, 8, "ADC Reading:", 2, UFB_ORIENT_H );
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
+        120, 8, "Battery Voltage:", 2, UFB_ORIENT_H );
+      // Take an ADC reading, and draw it.
+      ufb_draw_int( &framebuffer, ( cur_color ^ 0xFFFF ),
+        180, 220, adc_single_conversion( ADC1 ), 2, UFB_ORIENT_H );
       // TODO: Draw converted voltage value.
     }
     else if ( cur_mode == MODE_SD_CARD ) {

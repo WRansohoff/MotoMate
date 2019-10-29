@@ -7,6 +7,7 @@
 #define __VVC_APP_H
 
 // HAL includes.
+#include "hal/adc.h"
 #include "hal/tim.h"
 
 // Include global application values and definitions.

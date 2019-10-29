@@ -11,6 +11,7 @@
 #include "stm32l4xx.h"
 
 // HAL includes.
+#include "hal/adc.h"
 #include "hal/dma.h"
 #include "hal/gpio.h"
 #include "hal/rcc.h"
@@ -43,11 +44,12 @@ static inline void board_init( void ) {
   clock_init();
 
   // Enable peripherals: GPIOA, GPIOB, GPIOC,
-  // UART4, DAC1, DMA1, SPI1, TIM3, SYSCFG.
+  // UART4, ADC, DAC1, DMA1, SPI1, TIM3, SYSCFG.
   RCC->AHB1ENR  |=  ( RCC_AHB1ENR_DMA1EN );
   RCC->AHB2ENR  |=  ( RCC_AHB2ENR_GPIOAEN |
                       RCC_AHB2ENR_GPIOBEN |
-                      RCC_AHB2ENR_GPIOCEN );
+                      RCC_AHB2ENR_GPIOCEN |
+                      RCC_AHB2ENR_ADCEN );
   RCC->APB1ENR1 |=  ( RCC_APB1ENR1_DAC1EN |
                       RCC_APB1ENR1_TIM3EN |
                       RCC_APB1ENR1_UART4EN );
@@ -62,6 +64,8 @@ static inline void board_init( void ) {
   // PA0, PA1: Alt. Func. #8, low-speed (UART4 TX, RX)
   gpio_af_setup( GPIOA, 0, 8, 0 );
   gpio_af_setup( GPIOA, 1, 8, 0 );
+  // PC2: Analog mode (battery check ADC input)
+  gpio_setup( GPIOC, 2, GPIO_ANALOG );
   // PA4: Analog (DAC1, Channel 1)
   gpio_setup( GPIOA, 4, GPIO_ANALOG );
   // PB1: Alt. Func. #2 (TIM3_CH4), low-speed (TFT backlight control)
@@ -157,6 +161,19 @@ static inline void board_init( void ) {
   NVIC_SetPriority( EXTI15_10_IRQn, btn_pri_encoding );
   NVIC_EnableIRQ( EXTI15_10_IRQn );
 
+  // Select the system clock as the ADC clock source.
+  adc_clock_source( ADC_CLOCK_SYSCLK );
+  // Turn on the ADC and calibrate it.
+  adc_on( ADC1, 1 );
+  // Setup ADC for a single conversion on channel 3.
+  adc_conversion battery_adc = {
+    channel: 3,
+    sample_time: ADC_SAMP_640_CYC
+  };
+  adc_sequence_config( ADC1, &battery_adc, 1 );
+  // Enable the ADC.
+  ADC1->CR   |=   ( ADC_CR_ADEN );
+
   // Ensure there is always a null terminator at the end of the
   // UART receive ringbuffer.
   gps_rb.buf[ GPS_RINGBUF_LEN ] = '\0';
@@ -207,6 +224,9 @@ static inline void board_init( void ) {
 
   // Enable the DAC timer trigger.
   //DAC1->CR |=  ( DAC_CR_TEN1 );
+
+  // Ensure that the ADC is ready before starting.
+  while ( !( ADC1->ISR & ADC_ISR_ADRDY ) ) {};
 }
 
 #endif
