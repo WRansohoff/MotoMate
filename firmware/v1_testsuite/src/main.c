@@ -1,14 +1,5 @@
-// Standard library includes.
-#include <stdint.h>
-#include <stdlib.h>
-
 // Vendor-provided device header file.
 #include "stm32l4xx.h"
-
-// Utility includes.
-#include "ili9341.h"
-#include "ringbuf.h"
-#include "ufb.h"
 
 // Global definitions.
 #include "global.h"
@@ -69,7 +60,13 @@ int main(void) {
       // TODO: Draw triangles to act as 'left/right' arrows.
     }
     else if ( cur_mode == MODE_BACKLIGHT ) {
-      // TODO
+      // Draw menu title.
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ), 232, 46, "Display Brightness:", 2, UFB_ORIENT_H );
+      // TODO: Draw left/right triangles.
+      // Draw current value.
+      int brightness_pct = ( int )( tft_brightness * 100 );
+      ufb_draw_int( &framebuffer, ( cur_color ^ 0xFFFF ), 124, 140, brightness_pct, 3, UFB_ORIENT_H );
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ), 178, 140, '%', 3, UFB_ORIENT_H );
     }
     else if ( cur_mode == MODE_BATTERY ) {
       // TODO

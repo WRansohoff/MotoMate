@@ -10,6 +10,7 @@
 
 // HAL includes.
 #include "hal/rcc.h"
+#include "hal/tim.h"
 
 // BSP includes.
 #include "ili9341.h"
@@ -67,7 +68,7 @@ void UART4_IRQ_handler( void ) {
   }
 }
 
-// EXTI channel 3: Nav switch 'up'.
+// EXTI channel 3: Nav switch 'down'.
 void EXTI3_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 3 ) ) {
     // Clear the status flag.
@@ -93,7 +94,9 @@ void EXTI3_IRQ_handler( void ) {
       // TODO
     }
     else if ( cur_mode == MODE_BACKLIGHT ) {
-      // TODO
+      // Decrement brightness and update the PWM signal.
+      if ( tft_brightness > 0.05 ) { tft_brightness -= 0.05; }
+      timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
     }
     else if ( cur_mode == MODE_BATTERY ) {
       // TODO
@@ -107,7 +110,7 @@ void EXTI3_IRQ_handler( void ) {
   }
 }
 
-// EXTI channel 4: Nav switch 'down'.
+// EXTI channel 4: Nav switch 'up'.
 void EXTI4_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 4 ) ) {
     // Clear the status flag.
@@ -133,7 +136,9 @@ void EXTI4_IRQ_handler( void ) {
       // TODO
     }
     else if ( cur_mode == MODE_BACKLIGHT ) {
-      // TODO
+      // Increment brightness and update the PWM signal.
+      if ( tft_brightness < 0.96 ) { tft_brightness += 0.05; }
+      timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
     }
     else if ( cur_mode == MODE_BATTERY ) {
       // TODO
@@ -189,7 +194,9 @@ void EXTI5_9_IRQ_handler( void ) {
       // TODO
     }
     else if ( cur_mode == MODE_BACKLIGHT ) {
-      // TODO
+      // Increment brightness and update the PWM signal.
+      if ( tft_brightness < 0.96 ) { tft_brightness += 0.05; }
+      timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
     }
     else if ( cur_mode == MODE_BATTERY ) {
       // TODO
@@ -208,10 +215,35 @@ void EXTI5_9_IRQ_handler( void ) {
     // Mark the button press.
     new_button_press = BTN_LEFT;
     // Process the button press.
-    // Set the background color to green.
-    bg_r = 0x00;
-    bg_g = 0x2F;
-    bg_b = 0x08;
+    if ( cur_mode == MODE_MAIN_MENU ) {
+      // Set the background color to green.
+      bg_r = 0x00;
+      bg_g = 0x2F;
+      bg_b = 0x08;
+    }
+    else if ( cur_mode == MODE_GPS_RX ) {
+      // Set the background color to green.
+      bg_r = 0x00;
+      bg_g = 0x2F;
+      bg_b = 0x08;
+    }
+    else if ( cur_mode == MODE_AUDIO ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_BACKLIGHT ) {
+      // Decrement brightness and update the PWM signal.
+      if ( tft_brightness > 0.05 ) { tft_brightness -= 0.05; }
+      timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
+    }
+    else if ( cur_mode == MODE_BATTERY ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_SD_CARD ) {
+      // TODO
+    }
+    else if ( cur_mode == MODE_USB ) {
+      // TODO
+    }
   }
   // PC7: Nav switch 'press / center'.
   else if ( EXTI->PR1 & ( 1 << 7 ) ) {

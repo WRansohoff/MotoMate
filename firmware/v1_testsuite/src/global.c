@@ -19,7 +19,7 @@ uFB framebuffer = {
   buf: ( uint16_t* )&FRAMEBUFFER
 };
 // Float to store the desired display brightness (between [0.0, 1.0])
-volatile float tft_brightness = 0.67;
+volatile float tft_brightness = 0.65;
 
 // Ringbuffer for holding data sent by the GPS module.
 char gps_rb_buf[ GPS_RINGBUF_LEN + 1 ];
