@@ -65,8 +65,8 @@ int main(void) {
       // TODO: Draw left/right triangles.
       // Draw current value.
       int brightness_pct = ( int )( tft_brightness * 100 );
-      ufb_draw_int( &framebuffer, ( cur_color ^ 0xFFFF ), 124, 140, brightness_pct, 3, UFB_ORIENT_H );
-      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ), 178, 140, '%', 3, UFB_ORIENT_H );
+      ufb_draw_int( &framebuffer, ( cur_color ^ 0xFFFF ), 140, 124, brightness_pct, 3, UFB_ORIENT_H );
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ), 140, 178, '%', 3, UFB_ORIENT_H );
     }
     else if ( cur_mode == MODE_BATTERY ) {
       // TODO

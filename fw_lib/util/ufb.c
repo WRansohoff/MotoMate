@@ -426,6 +426,22 @@ void ufb_draw_char( uFB* fb, uint16_t color,
     w0 = UFB_CH_rct0;
     w1 = UFB_CH_lct1rct1 & 0x0000FFFF;
   }
+  else if ( c == ',' ) {
+    w0 = UFB_CH_cma0;
+    w1 = UFB_CH_cma1pct1 >> 16;
+  }
+  else if ( c == '%' ) {
+    w0 = UFB_CH_pct0;
+    w1 = UFB_CH_cma1pct1 & 0x0000FFFF;
+  }
+  else if ( c == ')' ) {
+    w0 = UFB_CH_rpn0;
+    w1 = UFB_CH_rpn1lpn1 >> 16;
+  }
+  else if ( c == '(' ) {
+    w0 = UFB_CH_lpn0;
+    w1 = UFB_CH_rpn1lpn1 & 0x0000FFFF;
+  }
   ufb_draw_letter( fb, color, x, y, w0, w1, scale, orient );
 }
 

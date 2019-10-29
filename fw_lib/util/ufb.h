@@ -119,6 +119,12 @@
 #define UFB_CH_lct0     0x00081422
 #define UFB_CH_rct0     0x00442810
 #define UFB_CH_lct1rct1 0x00000000
+#define UFB_CH_cma0     0x00010306
+#define UFB_CH_pct0     0x460C1830
+#define UFB_CH_cma1pct1 0x00006200
+#define UFB_CH_rpn0     0x000081C3
+#define UFB_CH_lpn0     0x007EC381
+#define UFB_CH_rpn1lpn1 0x7E000000
 
 /* Helper macros. */
 // Convert RGB to 565 format. Masks: R=0xF800 G=0x07E0 B=0x001F.
