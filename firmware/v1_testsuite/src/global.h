@@ -20,16 +20,23 @@
 #define MODE_AUDIO     ( 2 ) /* 'Test speaker and audio amp' */
 #define MODE_BACKLIGHT ( 3 ) /* 'Set display brightness' */
 #define MODE_BATTERY   ( 4 ) /* 'Check battery level' */
-#define MODE_SD_CARD   ( 5 ) /* 'Test microSD connection' (TODO) */
-#define MODE_USB       ( 6 ) /* 'Test USB connection' (TODO) */
+#define MODE_TOUCH     ( 5 ) /* 'Test touch screen' (TODO) */
+#define MODE_SD_CARD   ( 6 ) /* 'Test microSD connection' (TODO) */
+#define MODE_USB       ( 7 ) /* 'Test USB connection' (TODO) */
 // Menu selections.
 // Main menu:
 #define SEL_MAIN_GPS_RX    ( 0 )
 #define SEL_MAIN_AUDIO     ( 1 )
 #define SEL_MAIN_BACKLIGHT ( 2 )
 #define SEL_MAIN_BATTERY   ( 3 )
-#define SEL_MAIN_SD_CARD   ( 4 )
-#define SEL_MAIN_USB       ( 5 )
+#define SEL_MAIN_TOUCH     ( 4 )
+#define SEL_MAIN_SD_CARD   ( 5 )
+#define SEL_MAIN_USB       ( 6 )
+// Audio menu:
+#define SEL_AUDIO_MUTE     ( 0 )
+#define SEL_AUDIO_FREQ     ( 1 )
+#define SEL_AUDIO_SAMPLES  ( 2 )
+#define SEL_AUDIO_AMPDIV   ( 3 )
 
 // Preprocessor macros for button IDs.
 #define BTN_NONE        ( 0 )

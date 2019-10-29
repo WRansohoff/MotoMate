@@ -514,6 +514,135 @@ void ufb_draw_int( uFB* fb, uint16_t color, int x, int y, int ic, int scale, int
   }
 }
 
+// Draw a floating-point number to the display.
+// Currently limited to numbers within the range of a 32-bit int.
+void ufb_draw_float( uFB* fb, uint16_t color, int x, int y, float f, int decimals, int scale, int orient ) {
+  int magnitude = 1000000000;
+  int cur_x = x;
+  int cur_y = y;
+  int step = 6 * scale;
+  int first_found = 0;
+  float proc_val = f;
+  // Only allow up to 8 decimal points, to avoid int overflows.
+  if ( decimals > 8 ) { decimals = 8; }
+  if ( proc_val < 0 ) {
+    proc_val = proc_val * -1.0;
+    ufb_draw_char( fb, color, cur_x, cur_y, '-', scale, orient );
+    if ( orient == UFB_ORIENT_V ) {
+      cur_x += step;
+    }
+    else if ( orient == UFB_ORIENT_H ) {
+      cur_y += step;
+    }
+  }
+  // First draw the integer part of the number.
+  // TODO: Use the 'draw_int' method and have it return its extent.
+  for ( magnitude = 1000000000; magnitude > 0; magnitude = magnitude / 10 ) {
+    int m_val = ( int )( proc_val / magnitude );
+    proc_val -= ( m_val * magnitude );
+    if ( m_val > 0 || first_found || magnitude == 1 ) {
+      first_found = 1;
+    }
+    char mc = ' ';
+    if ( m_val == 0 ) {
+      mc = '0';
+    }
+    else if ( m_val == 1 ) {
+      mc = '1';
+    }
+    else if ( m_val == 2 ) {
+      mc = '2';
+    }
+    else if ( m_val == 3 ) {
+      mc = '3';
+    }
+    else if ( m_val == 4 ) {
+      mc = '4';
+    }
+    else if ( m_val == 5 ) {
+      mc = '5';
+    }
+    else if ( m_val == 6 ) {
+      mc = '6';
+    }
+    else if ( m_val == 7 ) {
+      mc = '7';
+    }
+    else if ( m_val == 8 ) {
+      mc = '8';
+    }
+    else if ( m_val == 9 ) {
+      mc = '9';
+    }
+    if ( first_found ) {
+      ufb_draw_char( fb, color, cur_x, cur_y, mc, scale, orient );
+      if ( orient == UFB_ORIENT_V ) {
+        cur_x += step;
+        if ( cur_x >= fb->w ) { return; }
+      }
+      else if ( orient == UFB_ORIENT_H ) {
+        cur_y += step;
+        if ( cur_y >= fb->h ) { return; }
+      }
+    }
+  }
+  // Next, draw the decimal point.
+  ufb_draw_char( fb, color, cur_x, cur_y, '.', scale, orient );
+  if ( orient == UFB_ORIENT_V ) {
+    cur_x += step;
+  }
+  else if ( orient == UFB_ORIENT_H ) {
+    cur_y += step;
+  }
+  // Finally, draw the fractional part of the number.
+  int mag = 10;
+  for ( int i = 0; i < decimals; ++i ) {
+    int m_val = ( int )( proc_val * mag );
+    proc_val -= ( float )( ( float )m_val / ( float )mag );
+    mag *= 10;
+    char mc = ' ';
+    if ( m_val == 0 ) {
+      mc = '0';
+    }
+    else if ( m_val == 1 ) {
+      mc = '1';
+    }
+    else if ( m_val == 2 ) {
+      mc = '2';
+    }
+    else if ( m_val == 3 ) {
+      mc = '3';
+    }
+    else if ( m_val == 4 ) {
+      mc = '4';
+    }
+    else if ( m_val == 5 ) {
+      mc = '5';
+    }
+    else if ( m_val == 6 ) {
+      mc = '6';
+    }
+    else if ( m_val == 7 ) {
+      mc = '7';
+    }
+    else if ( m_val == 8 ) {
+      mc = '8';
+    }
+    else if ( m_val == 9 ) {
+      mc = '9';
+    }
+    ufb_draw_char( fb, color, cur_x, cur_y, mc, scale, orient );
+    if ( orient == UFB_ORIENT_V ) {
+      cur_x += step;
+      if ( cur_x >= fb->w ) { return; }
+    }
+    else if ( orient == UFB_ORIENT_H ) {
+      cur_y += step;
+      if ( cur_y >= fb->h ) { return; }
+    }
+  }
+}
+
 // Draw a null-terminated C-string.
 void ufb_draw_str( uFB* fb, uint16_t color, int x, int y, const char* cstr, int scale, int orient ) {
   int i = 0;
@@ -557,6 +686,19 @@ void ufb_draw_lines( uFB* fb, uint16_t color, int x, int y, const char* cstr, in
       }
       ++i;
       char_offset += char_step;
+    }
+  }
+}
+
+// Invert the colors in a given rectangular area. (XOR with 0xFFFF)
+void ufb_invert( uFB* fb, int x, int y, int w, int h ) {
+  if ( x < 0 ) { x = 0; }
+  if ( x + w > 239 ) { w = 239 - x; }
+  if ( y < 0 ) { y = 0; }
+  if ( y + h > 319 ) { h = 319 - y; }
+  for ( int i = x; i < x + w; ++i ) {
+    for ( int j = y; j < y + h; ++j ) {
+      fb->buf[ i + j * fb->w ] = fb->buf[ i + j * fb->w ] ^ 0xFFFF;
     }
   }
 }

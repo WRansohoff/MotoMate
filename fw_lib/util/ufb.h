@@ -177,10 +177,17 @@ void ufb_draw_char( uFB* fb, uint16_t color,
 // Draw a <=32-bit integer to the display.
 void ufb_draw_int( uFB* fb, uint16_t color, int x, int y, int ic, int scale, int orient );
 
+// Draw a floating-point number to the display.
+// Currently limited to numbers within the range of a 32-bit int.
+void ufb_draw_float( uFB* fb, uint16_t color, int x, int y, float f, int decimals, int scale, int orient );
+
 // Draw a null-terminated C-string.
 void ufb_draw_str( uFB* fb, uint16_t color, int x, int y, const char* cstr, int scale, int orient );
 
 // Draw a null-terminated C-string, moving down a line every newline.
 void ufb_draw_lines( uFB* fb, uint16_t color, int x, int y, const char* cstr, int scale, int orient );
+
+// Invert the colors in a given rectangular area. (XOR with 0xFFFF)
+void ufb_invert( uFB* fb, int x, int y, int w, int h );
 
 #endif

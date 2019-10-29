@@ -33,7 +33,10 @@ int main(void) {
 
     if ( cur_mode == MODE_MAIN_MENU ||
          cur_mode == MODE_AUDIO ||
-         cur_mode == MODE_BACKLIGHT ) {
+         cur_mode == MODE_BACKLIGHT ||
+         cur_mode == MODE_TOUCH ||
+         cur_mode == MODE_SD_CARD ||
+         cur_mode == MODE_USB ) {
       // Wait for a button press before continuing.
       while ( new_button_presses[ 0 ] == BTN_NONE ) { __WFI(); }
       // Process button input(s).

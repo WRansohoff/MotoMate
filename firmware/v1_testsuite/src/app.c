@@ -49,7 +49,6 @@ void redraw_fb( void ) {
         8, 0, ( char* )gps_rb.buf, 1, UFB_ORIENT_H );
     }
     else if ( cur_mode == MODE_AUDIO ) {
-      // (TODO: Track & highlight current menu item.)
       // Draw test title.
       ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
         232, 16, "Audio Test Tone:", 3, UFB_ORIENT_H );
@@ -90,6 +89,19 @@ void redraw_fb( void ) {
       ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
         56, 306, '>', 1, UFB_ORIENT_H );
       // TODO: Draw 'mute?' selector.
+      // Highlight the currently-selected menu item.
+      if ( cur_selection == SEL_AUDIO_AMPDIV ) {
+        ufb_invert( &framebuffer, 110, 0, 40, 319 );
+      }
+      else if ( cur_selection == SEL_AUDIO_SAMPLES ) {
+        ufb_invert( &framebuffer, 70, 0, 40, 319 );
+      }
+      else if ( cur_selection == SEL_AUDIO_FREQ ) {
+        ufb_invert( &framebuffer, 30, 0, 40, 319 );
+      }
+      else if ( cur_selection == SEL_AUDIO_MUTE ) {
+        ufb_invert( &framebuffer, 0, 0, 35, 319 );
+      }
     }
     else if ( cur_mode == MODE_BACKLIGHT ) {
       // Draw menu title.
@@ -117,9 +129,15 @@ void redraw_fb( void ) {
       ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
         120, 8, "Battery Voltage:", 2, UFB_ORIENT_H );
       // Take an ADC reading, and draw it.
+      uint16_t adc_val = adc_single_conversion( ADC1 );
       ufb_draw_int( &framebuffer, ( cur_color ^ 0xFFFF ),
-        180, 220, adc_single_conversion( ADC1 ), 2, UFB_ORIENT_H );
-      // TODO: Draw converted voltage value.
+        180, 220, adc_val, 2, UFB_ORIENT_H );
+      // Calculate and draw the converted voltage value.
+      float batt_v = ( ( ( float )adc_val * 2.0 ) / 4095.0 ) * 3.3;
+      ufb_draw_float( &framebuffer, ( cur_color ^ 0xFFFF ),
+        120, 220, batt_v, 2, 2, UFB_ORIENT_H );
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
+        120, 270, 'V', 2, UFB_ORIENT_H );
     }
     else if ( cur_mode == MODE_TOUCH ) {
       // TODO
@@ -165,7 +183,12 @@ void process_buttons ( void ) {
         bg_b = 0x1F;
       }
       else if ( cur_mode == MODE_AUDIO ) {
-        // TODO
+        // Switch menu selection.
+        // Shortcut: decrement by 1 unless it's at the min value.
+        if ( cur_selection == SEL_AUDIO_MUTE ) {
+          cur_selection = SEL_AUDIO_AMPDIV;
+        }
+        else { --cur_selection; }
       }
       else if ( cur_mode == MODE_BACKLIGHT ) {
         // Decrement brightness and update the PWM signal.
@@ -201,7 +224,12 @@ void process_buttons ( void ) {
         bg_b = 0x00;
       }
       else if ( cur_mode == MODE_AUDIO ) {
-        // TODO
+        // Switch menu selection.
+        // Shortcut: increment by 1 unless it's at the max value.
+        if ( cur_selection == SEL_AUDIO_AMPDIV ) {
+          cur_selection = SEL_AUDIO_MUTE;
+        }
+        else { ++cur_selection; }
       }
       else if ( cur_mode == MODE_BACKLIGHT ) {
         // Increment brightness and update the PWM signal.
@@ -229,6 +257,7 @@ void process_buttons ( void ) {
         }
         else if ( cur_selection == SEL_MAIN_AUDIO ) {
           cur_mode = MODE_AUDIO;
+          cur_selection = SEL_AUDIO_AMPDIV;
         }
         else if ( cur_selection == SEL_MAIN_BACKLIGHT ) {
           cur_mode = MODE_BACKLIGHT;
@@ -317,6 +346,7 @@ void process_buttons ( void ) {
         }
         else if ( cur_selection == SEL_MAIN_AUDIO ) {
           cur_mode = MODE_AUDIO;
+          cur_selection = SEL_AUDIO_AMPDIV;
         }
         else if ( cur_selection == SEL_MAIN_BACKLIGHT ) {
           cur_mode = MODE_BACKLIGHT;
