@@ -302,9 +302,11 @@ void EXTI10_15_IRQ_handler( void ) {
          cur_mode == MODE_BATTERY ||
          cur_mode == MODE_SD_CARD ||
          cur_mode == MODE_USB ) {
-      // Return to the main menu and reset selection cursor. (TODO)
+      // TODO: This relies on a specific ordering of the
+      // preprocessor macros, and that's bad practice.
+      cur_selection = cur_mode - 1;
+      // Return to the main menu and reset selection cursor.
       cur_mode = MODE_MAIN_MENU;
-      cur_selection = SEL_MAIN_GPS_RX;
     }
   }
 }
