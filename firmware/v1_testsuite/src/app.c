@@ -59,7 +59,11 @@ void redraw_fb( void ) {
       // Draw menu title.
       ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
         232, 46, "Display Brightness:", 2, UFB_ORIENT_H );
-      // TODO: Draw left/right triangles.
+      // Draw left/right carets.
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
+        140, 100, '<', 3, UFB_ORIENT_H );
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
+        140, 204, '>', 3, UFB_ORIENT_H );
       // Draw current value.
       int brightness_pct = ( int )( tft_brightness * 100 );
       ufb_draw_int( &framebuffer, ( cur_color ^ 0xFFFF ),
