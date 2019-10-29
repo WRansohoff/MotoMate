@@ -46,14 +46,46 @@ void redraw_fb( void ) {
         8, 0, ( char* )gps_rb.buf, 1, UFB_ORIENT_H );
     }
     else if ( cur_mode == MODE_AUDIO ) {
-      // TODO: Draw the currently-selected option in inverted colors,
-      // and allow modifying options.
-      // TODO: Draw explanatory strings.
+      // Draw test title.
       ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
         232, 16, "Audio Test Tone:", 3, UFB_ORIENT_H );
-      // TODO: Draw boxes outlining the current values of the options.
-      // TODO: Draw the current values of the options.
-      // TODO: Draw triangles to act as 'left/right' arrows.
+      // Draw explanatory strings.
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
+        140, 8, "Amplitude Division:", 2, UFB_ORIENT_H );
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
+        100, 8, "Sine Wave Samples:", 2, UFB_ORIENT_H );
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
+        60, 8, "Audio Freq. (Hz):", 2, UFB_ORIENT_H );
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
+        20, 8, "Mute?", 2, UFB_ORIENT_H );
+      // Draw boxes outlining the current values of the options.
+      ufb_draw_rect( &framebuffer, ( cur_color ^ 0xFFFF ),
+        118, 244, 28, 60, 1 );
+      ufb_draw_rect( &framebuffer, ( cur_color ^ 0xFFFF ),
+        78, 244, 28, 60, 1 );
+      ufb_draw_rect( &framebuffer, ( cur_color ^ 0xFFFF ),
+        38, 244, 28, 60, 1 );
+      // Draw the current values of the options.
+      ufb_draw_int( &framebuffer, ( cur_color ^ 0xFFFF ),
+        140, 262, amp_div, 2, UFB_ORIENT_H );
+      ufb_draw_int( &framebuffer, ( cur_color ^ 0xFFFF ),
+        100, 262, cur_samples, 2, UFB_ORIENT_H );
+      ufb_draw_int( &framebuffer, ( cur_color ^ 0xFFFF ),
+        60, 248, cur_hz, 2, UFB_ORIENT_H );
+      // Draw 'left/right' carets.
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
+        136, 238, '<', 1, UFB_ORIENT_H );
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
+        136, 306, '>', 1, UFB_ORIENT_H );
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
+        96, 238, '<', 1, UFB_ORIENT_H );
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
+        96, 306, '>', 1, UFB_ORIENT_H );
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
+        56, 238, '<', 1, UFB_ORIENT_H );
+      ufb_draw_char( &framebuffer, ( cur_color ^ 0xFFFF ),
+        56, 306, '>', 1, UFB_ORIENT_H );
+      // TODO: Draw 'mute?' selector.
     }
     else if ( cur_mode == MODE_BACKLIGHT ) {
       // Draw menu title.
