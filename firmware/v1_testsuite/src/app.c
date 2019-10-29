@@ -64,6 +64,241 @@ void redraw_fb( void ) {
     }
 }
 
+// Register a new button input.
+void register_button_press( int type ) {
+  for ( int i = 0; i < MAX_BTN_PRESSES; ++i ) {
+    if ( new_button_presses[ i ] == BTN_NONE ) {
+      new_button_presses[ i ] = type;
+      return;
+    }
+  }
+}
+
 // Process new button input(s).
 void process_buttons ( void ) {
+  for ( int i = 0; i < MAX_BTN_PRESSES; ++i ) {
+    // If there are no more presses to process, done.
+    if ( new_button_presses[ i ] == BTN_NONE ) { return; }
+
+    // Process the next button press.
+    else if ( new_button_presses[ i ] == BTN_DOWN ) {
+      if ( cur_mode == MODE_MAIN_MENU ) {
+        // Switch menu selection.
+        // Shortcut: decrement by 1 unless it's at the min value.
+        if ( cur_selection == SEL_MAIN_GPS_RX ) {
+          cur_selection = SEL_MAIN_USB;
+        }
+        else { --cur_selection; }
+      }
+      else if ( cur_mode == MODE_GPS_RX ) {
+        // Set background the color to purple.
+        bg_r = 0x1F;
+        bg_g = 0x00;
+        bg_b = 0x1F;
+      }
+      else if ( cur_mode == MODE_AUDIO ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_BACKLIGHT ) {
+        // Decrement brightness and update the PWM signal.
+        if ( tft_brightness > 0.05 ) { tft_brightness -= 0.05; }
+        timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
+      }
+      else if ( cur_mode == MODE_BATTERY ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_SD_CARD ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_USB ) {
+        // TODO
+      }
+    }
+    else if ( new_button_presses[ i ] == BTN_UP ) {
+      if ( cur_mode == MODE_MAIN_MENU ) {
+        // Switch menu selection.
+        // Shortcut: increment by 1 unless it's at the max value.
+        if ( cur_selection == SEL_MAIN_USB ) {
+          cur_selection = SEL_MAIN_GPS_RX;
+        }
+        else { ++cur_selection; }
+      }
+      else if ( cur_mode == MODE_GPS_RX ) {
+        // Set the background color to yellow.
+        bg_r = 0x1F;
+        bg_g = 0x0C;
+        bg_b = 0x00;
+      }
+      else if ( cur_mode == MODE_AUDIO ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_BACKLIGHT ) {
+        // Increment brightness and update the PWM signal.
+        if ( tft_brightness < 0.96 ) { tft_brightness += 0.05; }
+        timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
+      }
+      else if ( cur_mode == MODE_BATTERY ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_SD_CARD ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_USB ) {
+        // TODO
+      }
+    }
+    else if ( new_button_presses[ i ] == BTN_RIGHT ) {
+      if ( cur_mode == MODE_MAIN_MENU ) {
+        // Enter the current menu selection.
+        if ( cur_selection == SEL_MAIN_GPS_RX ) {
+          cur_mode = MODE_GPS_RX;
+        }
+        else if ( cur_selection == SEL_MAIN_AUDIO ) {
+          cur_mode = MODE_AUDIO;
+        }
+        else if ( cur_selection == SEL_MAIN_BACKLIGHT ) {
+          cur_mode = MODE_BACKLIGHT;
+        }
+        else if ( cur_selection == SEL_MAIN_BATTERY ) {
+          cur_mode = MODE_BATTERY;
+        }
+        else if ( cur_selection == SEL_MAIN_SD_CARD ) {
+          // TODO
+          //cur_mode = MODE_SD_CARD;
+        }
+        else if ( cur_selection == SEL_MAIN_USB ) {
+          // TODO
+          //cur_mode = MODE_USB;
+        }
+      }
+      else if ( cur_mode == MODE_GPS_RX ) {
+        // Set the background color to red.
+        bg_r = 0x1F;
+        bg_g = 0x00;
+        bg_b = 0x00;
+      }
+      else if ( cur_mode == MODE_AUDIO ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_BACKLIGHT ) {
+        // Increment brightness and update the PWM signal.
+        if ( tft_brightness < 0.96 ) { tft_brightness += 0.05; }
+        timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
+      }
+      else if ( cur_mode == MODE_BATTERY ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_SD_CARD ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_USB ) {
+        // TODO
+      }
+    }
+    else if ( new_button_presses[ i ] == BTN_LEFT ) {
+      if ( cur_mode == MODE_MAIN_MENU ) {
+        // Set the background color to green.
+        bg_r = 0x00;
+        bg_g = 0x2F;
+        bg_b = 0x08;
+      }
+      else if ( cur_mode == MODE_GPS_RX ) {
+        // Set the background color to green.
+        bg_r = 0x00;
+        bg_g = 0x2F;
+        bg_b = 0x08;
+      }
+      else if ( cur_mode == MODE_AUDIO ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_BACKLIGHT ) {
+        // Decrement brightness and update the PWM signal.
+        if ( tft_brightness > 0.05 ) { tft_brightness -= 0.05; }
+        timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
+      }
+      else if ( cur_mode == MODE_BATTERY ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_SD_CARD ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_USB ) {
+        // TODO
+      }
+    }
+    else if ( new_button_presses[ i ] == BTN_CENTER ) {
+      if ( cur_mode == MODE_MAIN_MENU ) {
+        // Enter the current menu selection.
+        if ( cur_selection == SEL_MAIN_GPS_RX ) {
+          cur_mode = MODE_GPS_RX;
+        }
+        else if ( cur_selection == SEL_MAIN_AUDIO ) {
+          cur_mode = MODE_AUDIO;
+        }
+        else if ( cur_selection == SEL_MAIN_BACKLIGHT ) {
+          cur_mode = MODE_BACKLIGHT;
+        }
+        else if ( cur_selection == SEL_MAIN_BATTERY ) {
+          cur_mode = MODE_BATTERY;
+        }
+        else if ( cur_selection == SEL_MAIN_SD_CARD ) {
+          // TODO
+          //cur_mode = MODE_SD_CARD;
+        }
+        else if ( cur_selection == SEL_MAIN_USB ) {
+          // TODO
+          //cur_mode = MODE_USB;
+        }
+      }
+      else if ( cur_mode == MODE_GPS_RX ) {
+        // Set the background color to blue.
+        bg_r = 0x00;
+        bg_g = 0x00;
+        bg_b = 0x1F;
+      }
+      else if ( cur_mode == MODE_AUDIO ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_BACKLIGHT ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_BATTERY ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_SD_CARD ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_USB ) {
+        // TODO
+      }
+    }
+    else if ( new_button_presses[ i ] == BTN_MODE ) {
+      // Set the color to teal.
+      bg_r = 0x00;
+      bg_g = 0x0F;
+      bg_b = 0x0F;
+    }
+    else if ( new_button_presses[ i ] == BTN_BACK ) {
+      if ( cur_mode == MODE_GPS_RX ||
+           cur_mode == MODE_AUDIO ||
+           cur_mode == MODE_BACKLIGHT ||
+           cur_mode == MODE_BATTERY ||
+           cur_mode == MODE_SD_CARD ||
+           cur_mode == MODE_USB ) {
+        // TODO: This relies on a specific ordering of the
+        // preprocessor macros, and that's bad practice.
+        cur_selection = cur_mode - 1;
+        // Return to the main menu and reset selection cursor.
+        cur_mode = MODE_MAIN_MENU;
+        // Discard any other pending button presses and return.
+        for ( int j = 0; j < MAX_BTN_PRESSES; ++j ) {
+          new_button_presses[ j ] = BTN_NONE;
+        }
+        return;
+      }
+    }
+
+    // Mark the button press as processed.
+    new_button_presses[ i ] = BTN_NONE;
+  }
 }

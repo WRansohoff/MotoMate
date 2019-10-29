@@ -7,6 +7,9 @@
 // BSP include.
 #include "hal/motomate_v1.h"
 
+// Project includes.
+#include "app.h"
+
 /**
  * Main program.
  */
@@ -17,7 +20,6 @@ int main(void) {
   board_init();
 
   // Main application loop.
-  uint16_t cur_color;
   while (1) {
     // Wait for an ongoing display DMA transfer operation to complete
     // before modifying the framebuffer.
@@ -29,20 +31,23 @@ int main(void) {
     // Re-trigger a DMA transfer to draw to the display.
     DMA1_Channel3->CCR |=  ( DMA_CCR_EN );
 
-    if ( cur_mode == MODE_MAIN_MENU || cur_mode == MODE_AUDIO ) {
+    if ( cur_mode == MODE_MAIN_MENU ||
+         cur_mode == MODE_AUDIO ||
+         cur_mode == MODE_BACKLIGHT ||
+         cur_mode == MODE_BATTERY ) {
       // Wait for a button press before continuing.
-      while ( new_button_press == BTN_NONE ) { __WFI(); }
-      // TODO: It would be better to process button inputs here,
-      // instead of in the interrupt handlers which should be short.
-      new_button_press = BTN_NONE;
+      while ( new_button_presses[ 0 ] == BTN_NONE ) { __WFI(); }
+      // Process button input(s).
+      process_buttons();
     }
     else if ( cur_mode == MODE_GPS_RX ) {
       // Wait for a button press or new GPS messages before continuing.
-      while ( new_button_press == BTN_NONE &&
+      while ( new_button_presses[ 0 ] == BTN_NONE &&
               !new_gps_messages ) {
         __WFI();
       }
-      new_button_press = BTN_NONE;
+      // Process button input(s), if any.
+      process_buttons();
       new_gps_messages = 0;
     }
   }

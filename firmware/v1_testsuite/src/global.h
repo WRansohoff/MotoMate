@@ -33,8 +33,8 @@
 
 // Preprocessor macros for button IDs.
 #define BTN_NONE        ( 0 )
-#define BTN_UP          ( 3 )
-#define BTN_DOWN        ( 4 )
+#define BTN_DOWN        ( 3 )
+#define BTN_UP          ( 4 )
 #define BTN_RIGHT       ( 5 )
 #define BTN_LEFT        ( 6 )
 #define BTN_CENTER      ( 7 )
@@ -47,6 +47,9 @@
 
 // Length of ringbuffer to hold data received from the GPS module.
 #define GPS_RINGBUF_LEN ( 1024 )
+
+// Maximum number of button presses to queue.
+#define MAX_BTN_PRESSES ( 8 )
 
 /* Extern declarations for values defined in the source file. */
 // Audio buffer and values.
@@ -65,7 +68,8 @@ extern volatile uint16_t bg_r, bg_g, bg_b;
 // Current application 'mode' and menu selection.
 extern volatile int cur_mode, cur_selection;
 // Values to track whether certain events have occurred.
-extern volatile int new_button_press, new_gps_messages;
+extern volatile int new_button_presses[ MAX_BTN_PRESSES ];
+extern volatile int new_gps_messages;
 // Current system clock speed, in Hz.
 extern uint32_t SystemCoreClock;
 

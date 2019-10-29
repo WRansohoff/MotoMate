@@ -164,11 +164,6 @@ static inline void board_init( void ) {
   // with a receive timeout of 10 cycles.
   uart_on( UART4, 9600, 10 );
 
-  // Set the DAC sine wave buffer to 0's ('should_play = 0' at boot).
-  for ( int i = 0; i < MAX_SINE_SAMPLES; ++i ) {
-    SINE_WAVE[ i ] = 0;
-  }
-
   // DMA configuration (DMA1, channel 3: SPI1 transmit).
   dma_config_tx( DMA1_BASE, 3,
                  ( uint32_t )&FRAMEBUFFER,

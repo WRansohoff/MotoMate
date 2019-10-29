@@ -17,7 +17,8 @@
 #include "ringbuf.h"
 #include "ufb.h"
 
-// Global definitions.
+// Project includes.
+#include "app.h"
 #include "global.h"
 
 // DMA1, Channel 3: SPI transmit.
@@ -71,84 +72,20 @@ void UART4_IRQ_handler( void ) {
 // EXTI channel 3: Nav switch 'down'.
 void EXTI3_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 3 ) ) {
+    // Mark the button press.
+    register_button_press( BTN_DOWN );
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 3 );
-    // Mark the button press.
-    new_button_press = BTN_UP;
-    // Process the button press.
-    if ( cur_mode == MODE_MAIN_MENU ) {
-      // Switch menu selection.
-      // Shortcut: decrement by 1 unless it's at the min value.
-      if ( cur_selection == SEL_MAIN_GPS_RX ) {
-        cur_selection = SEL_MAIN_USB;
-      }
-      else { --cur_selection; }
-    }
-    else if ( cur_mode == MODE_GPS_RX ) {
-      // Set background the color to purple.
-      bg_r = 0x1F;
-      bg_g = 0x00;
-      bg_b = 0x1F;
-    }
-    else if ( cur_mode == MODE_AUDIO ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_BACKLIGHT ) {
-      // Decrement brightness and update the PWM signal.
-      if ( tft_brightness > 0.05 ) { tft_brightness -= 0.05; }
-      timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
-    }
-    else if ( cur_mode == MODE_BATTERY ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_SD_CARD ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_USB ) {
-      // TODO
-    }
   }
 }
 
 // EXTI channel 4: Nav switch 'up'.
 void EXTI4_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 4 ) ) {
+    // Mark the button press.
+    register_button_press( BTN_UP );
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 4 );
-    // Mark the button press.
-    new_button_press = BTN_DOWN;
-    // Process the button press.
-    if ( cur_mode == MODE_MAIN_MENU ) {
-      // Switch menu selection.
-      // Shortcut: increment by 1 unless it's at the max value.
-      if ( cur_selection == SEL_MAIN_USB ) {
-        cur_selection = SEL_MAIN_GPS_RX;
-      }
-      else { ++cur_selection; }
-    }
-    else if ( cur_mode == MODE_GPS_RX ) {
-      // Set the background color to yellow.
-      bg_r = 0x1F;
-      bg_g = 0x0C;
-      bg_b = 0x00;
-    }
-    else if ( cur_mode == MODE_AUDIO ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_BACKLIGHT ) {
-      // Increment brightness and update the PWM signal.
-      if ( tft_brightness < 0.96 ) { tft_brightness += 0.05; }
-      timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
-    }
-    else if ( cur_mode == MODE_BATTERY ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_SD_CARD ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_USB ) {
-      // TODO
-    }
   }
 }
 
@@ -156,180 +93,40 @@ void EXTI4_IRQ_handler( void ) {
 void EXTI5_9_IRQ_handler( void ) {
   // PB5: Nav switch 'right'.
   if ( EXTI->PR1 & ( 1 << 5 ) ) {
+    // Mark the button press.
+    register_button_press( BTN_RIGHT );
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 5 );
-    // Mark the button press.
-    new_button_press = BTN_RIGHT;
-    // Process the button press.
-    if ( cur_mode == MODE_MAIN_MENU ) {
-      // Enter the current menu selection.
-      if ( cur_selection == SEL_MAIN_GPS_RX ) {
-        cur_mode = MODE_GPS_RX;
-      }
-      else if ( cur_selection == SEL_MAIN_AUDIO ) {
-        cur_mode = MODE_AUDIO;
-      }
-      else if ( cur_selection == SEL_MAIN_BACKLIGHT ) {
-        cur_mode = MODE_BACKLIGHT;
-      }
-      else if ( cur_selection == SEL_MAIN_BATTERY ) {
-        cur_mode = MODE_BATTERY;
-      }
-      else if ( cur_selection == SEL_MAIN_SD_CARD ) {
-        // TODO
-        //cur_mode = MODE_SD_CARD;
-      }
-      else if ( cur_selection == SEL_MAIN_USB ) {
-        // TODO
-        //cur_mode = MODE_USB;
-      }
-    }
-    else if ( cur_mode == MODE_GPS_RX ) {
-      // Set the background color to red.
-      bg_r = 0x1F;
-      bg_g = 0x00;
-      bg_b = 0x00;
-    }
-    else if ( cur_mode == MODE_AUDIO ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_BACKLIGHT ) {
-      // Increment brightness and update the PWM signal.
-      if ( tft_brightness < 0.96 ) { tft_brightness += 0.05; }
-      timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
-    }
-    else if ( cur_mode == MODE_BATTERY ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_SD_CARD ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_USB ) {
-      // TODO
-    }
   }
   // PC6: Nav switch 'left'.
   else if ( EXTI->PR1 & ( 1 << 6 ) ) {
+    // Mark the button press.
+    register_button_press( BTN_LEFT );
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 6 );
-    // Mark the button press.
-    new_button_press = BTN_LEFT;
-    // Process the button press.
-    if ( cur_mode == MODE_MAIN_MENU ) {
-      // Set the background color to green.
-      bg_r = 0x00;
-      bg_g = 0x2F;
-      bg_b = 0x08;
-    }
-    else if ( cur_mode == MODE_GPS_RX ) {
-      // Set the background color to green.
-      bg_r = 0x00;
-      bg_g = 0x2F;
-      bg_b = 0x08;
-    }
-    else if ( cur_mode == MODE_AUDIO ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_BACKLIGHT ) {
-      // Decrement brightness and update the PWM signal.
-      if ( tft_brightness > 0.05 ) { tft_brightness -= 0.05; }
-      timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
-    }
-    else if ( cur_mode == MODE_BATTERY ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_SD_CARD ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_USB ) {
-      // TODO
-    }
   }
   // PC7: Nav switch 'press / center'.
   else if ( EXTI->PR1 & ( 1 << 7 ) ) {
+    // Mark the button press.
+    register_button_press( BTN_CENTER );
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 7 );
-    // Mark the button press.
-    new_button_press = BTN_CENTER;
-    // Process the button press.
-    if ( cur_mode == MODE_MAIN_MENU ) {
-      // Enter the current menu selection.
-      if ( cur_selection == SEL_MAIN_GPS_RX ) {
-        cur_mode = MODE_GPS_RX;
-      }
-      else if ( cur_selection == SEL_MAIN_AUDIO ) {
-        cur_mode = MODE_AUDIO;
-      }
-      else if ( cur_selection == SEL_MAIN_BACKLIGHT ) {
-        cur_mode = MODE_BACKLIGHT;
-      }
-      else if ( cur_selection == SEL_MAIN_BATTERY ) {
-        cur_mode = MODE_BATTERY;
-      }
-      else if ( cur_selection == SEL_MAIN_SD_CARD ) {
-        // TODO
-        //cur_mode = MODE_SD_CARD;
-      }
-      else if ( cur_selection == SEL_MAIN_USB ) {
-        // TODO
-        //cur_mode = MODE_USB;
-      }
-    }
-    else if ( cur_mode == MODE_GPS_RX ) {
-      // Set the background color to blue.
-      bg_r = 0x00;
-      bg_g = 0x00;
-      bg_b = 0x1F;
-    }
-    else if ( cur_mode == MODE_AUDIO ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_BACKLIGHT ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_BATTERY ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_SD_CARD ) {
-      // TODO
-    }
-    else if ( cur_mode == MODE_USB ) {
-      // TODO
-    }
   }
   // PA8: 'Mode'
   else if ( EXTI->PR1 & ( 1 << 8 ) ) {
+    // Mark the button press.
+    register_button_press( BTN_MODE );
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 8 );
-    // Mark the button press.
-    new_button_press = BTN_MODE;
-    // Process the button press.
-    // Set the color to teal.
-    bg_r = 0x00;
-    bg_g = 0x0F;
-    bg_b = 0x0F;
   }
 }
 
 // EXTI channels 10-15: 'back'.
 void EXTI10_15_IRQ_handler( void ) {
   if ( EXTI->PR1 & ( 1 << 14 ) ) {
+    // Mark the button press.
+    register_button_press( BTN_BACK );
     // Clear the status flag.
     EXTI->PR1 |=  ( 1 << 14 );
-    // Mark the button press.
-    new_button_press = BTN_BACK;
-    // Process the button press.
-    if ( cur_mode == MODE_GPS_RX ||
-         cur_mode == MODE_AUDIO ||
-         cur_mode == MODE_BACKLIGHT ||
-         cur_mode == MODE_BATTERY ||
-         cur_mode == MODE_SD_CARD ||
-         cur_mode == MODE_USB ) {
-      // TODO: This relies on a specific ordering of the
-      // preprocessor macros, and that's bad practice.
-      cur_selection = cur_mode - 1;
-      // Return to the main menu and reset selection cursor.
-      cur_mode = MODE_MAIN_MENU;
-    }
   }
 }

@@ -8,7 +8,7 @@ volatile int amp_div = 1;
 volatile int cur_samples = 32;
 volatile int should_play = 0;
 volatile int cur_hz = 440;
-volatile uint16_t SINE_WAVE[ MAX_SINE_SAMPLES ];
+volatile uint16_t SINE_WAVE[ MAX_SINE_SAMPLES ] = { [ 0 ... MAX_SINE_SAMPLES - 1 ] = 0 };
 
 // 320x240-pixel 16-bit (RGB-565) framebuffer.
 // Note: it's 150KB of RAM.
@@ -42,7 +42,7 @@ volatile int cur_mode = MODE_GPS_RX;
 volatile int cur_selection = SEL_MAIN_GPS_RX;
 // Variable to track whether a new button press was received.
 // TODO: Use a queue?
-volatile int new_button_press = BTN_NONE;
+volatile int new_button_presses[ MAX_BTN_PRESSES ] = { [ 0 ... MAX_BTN_PRESSES - 1 ] = BTN_NONE };
 // Variable to track whether a new set of GPS messages are ready.
 volatile int new_gps_messages = 0;
 
