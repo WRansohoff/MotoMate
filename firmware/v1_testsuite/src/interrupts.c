@@ -19,15 +19,6 @@
 // Global definitions.
 #include "global.h"
 
-// Declarations for values that are defined somewhere else.
-extern volatile uint16_t FRAMEBUFFER[ ILI9341_A ];
-extern ringbuf gps_rb;
-extern volatile uint16_t bg_r, bg_g, bg_b;
-extern volatile int cur_mode;
-extern volatile int cur_selection;
-extern volatile int new_button_press;
-extern volatile int new_gps_messages;
-
 // DMA1, Channel 3: SPI transmit.
 void DMA1_chan3_IRQ_handler( void ) {
   // Since the DMA peripheral can only handle buffers up to 64KWords,

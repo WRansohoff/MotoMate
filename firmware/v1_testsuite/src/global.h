@@ -1,8 +1,17 @@
 /*
- * Header file to hold global definitions.
+ * Header file to hold global declarations.
  */
 #ifndef __VVC_GLOBAL_H
 #define __VVC_GLOBAL_H
+
+// Standard library includes.
+#include <stdint.h>
+#include <stdlib.h>
+
+// Utility includes.
+#include "ili9341.h"
+#include "ringbuf.h"
+#include "ufb.h"
 
 // Preprocessor macros for menu items.
 // Application modes.
@@ -38,5 +47,26 @@
 
 // Length of ringbuffer to hold data received from the GPS module.
 #define GPS_RINGBUF_LEN ( 1024 )
+
+/* Extern declarations for values defined in the source file. */
+// Audio buffer and values.
+extern volatile int amp_div, cur_samples, should_play, cur_hz;
+extern volatile uint16_t SINE_WAVE[ MAX_SINE_SAMPLES ];
+// Display framebuffer and values.
+extern volatile uint16_t FRAMEBUFFER[ ILI9341_A ];
+extern uFB framebuffer;
+extern volatile float tft_brightness;
+// GPS module ringbuffer and values.
+extern char gps_rb_buf[ GPS_RINGBUF_LEN + 1 ];
+extern ringbuf gps_rb;
+// Application values.
+// Current background color values.
+extern volatile uint16_t bg_r, bg_g, bg_b;
+// Current application 'mode' and menu selection.
+extern volatile int cur_mode, cur_selection;
+// Values to track whether certain events have occurred.
+extern volatile int new_button_press, new_gps_messages;
+// Current system clock speed, in Hz.
+extern uint32_t SystemCoreClock;
 
 #endif

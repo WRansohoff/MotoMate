@@ -77,6 +77,7 @@ AS_SRC    = ./boot_code/$(MCU_FILES)_core.S
 AS_SRC   += ./vector_tables/$(MCU_FILES)_vt.S
 C_SRC     = ./src/main.c
 C_SRC    += ./src/interrupts.c
+C_SRC    += ./src/global.c
 C_SRC    += ./../../fw_lib/bsp/hal/adc.c
 C_SRC    += ./../../fw_lib/bsp/hal/dma.c
 C_SRC    += ./../../fw_lib/bsp/hal/gpio.c
