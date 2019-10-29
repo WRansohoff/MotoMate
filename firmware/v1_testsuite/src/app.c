@@ -23,16 +23,19 @@ void redraw_fb( void ) {
       ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ), 42, 16,
         "Check battery voltage", 1, UFB_ORIENT_H );
       ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ), 52, 16,
-        "Test microSD card (NOT IMPLEMENTED)", 1, UFB_ORIENT_H );
+        "Test touch screen (NOT IMPLEMENTED)", 1, UFB_ORIENT_H );
       ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ), 62, 16,
+        "Test microSD card (NOT IMPLEMENTED)", 1, UFB_ORIENT_H );
+      ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ), 72, 16,
         "Test USB connectivity (NOT IMPLEMENTED)", 1, UFB_ORIENT_H );
       // Draw a triangle next to the current selection.
       int tri_base = 6;
       if ( cur_selection == SEL_MAIN_AUDIO ) { tri_base = 16; }
       else if ( cur_selection == SEL_MAIN_BACKLIGHT ) { tri_base = 26; }
       else if ( cur_selection == SEL_MAIN_BATTERY ) { tri_base = 36; }
-      else if ( cur_selection == SEL_MAIN_SD_CARD ) { tri_base = 46; }
-      else if ( cur_selection == SEL_MAIN_USB ) { tri_base = 56; }
+      else if ( cur_selection == SEL_MAIN_TOUCH ) { tri_base = 46; }
+      else if ( cur_selection == SEL_MAIN_SD_CARD ) { tri_base = 56; }
+      else if ( cur_selection == SEL_MAIN_USB ) { tri_base = 66; }
       ufb_fill_rect( &framebuffer, ( cur_color ^ 0xFFFF ),
         tri_base, 4, 6, 2 );
       ufb_fill_rect( &framebuffer, ( cur_color ^ 0xFFFF ),
@@ -46,6 +49,7 @@ void redraw_fb( void ) {
         8, 0, ( char* )gps_rb.buf, 1, UFB_ORIENT_H );
     }
     else if ( cur_mode == MODE_AUDIO ) {
+      // (TODO: Track & highlight current menu item.)
       // Draw test title.
       ufb_draw_str( &framebuffer, ( cur_color ^ 0xFFFF ),
         232, 16, "Audio Test Tone:", 3, UFB_ORIENT_H );
@@ -117,6 +121,9 @@ void redraw_fb( void ) {
         180, 220, adc_single_conversion( ADC1 ), 2, UFB_ORIENT_H );
       // TODO: Draw converted voltage value.
     }
+    else if ( cur_mode == MODE_TOUCH ) {
+      // TODO
+    }
     else if ( cur_mode == MODE_SD_CARD ) {
       // TODO
     }
@@ -168,6 +175,9 @@ void process_buttons ( void ) {
       else if ( cur_mode == MODE_BATTERY ) {
         // TODO
       }
+      else if ( cur_mode == MODE_TOUCH ) {
+        // TODO
+      }
       else if ( cur_mode == MODE_SD_CARD ) {
         // TODO
       }
@@ -201,6 +211,9 @@ void process_buttons ( void ) {
       else if ( cur_mode == MODE_BATTERY ) {
         // TODO
       }
+      else if ( cur_mode == MODE_TOUCH ) {
+        // TODO
+      }
       else if ( cur_mode == MODE_SD_CARD ) {
         // TODO
       }
@@ -222,6 +235,9 @@ void process_buttons ( void ) {
         }
         else if ( cur_selection == SEL_MAIN_BATTERY ) {
           cur_mode = MODE_BATTERY;
+        }
+        else if ( cur_mode == MODE_TOUCH ) {
+          // TODO
         }
         else if ( cur_selection == SEL_MAIN_SD_CARD ) {
           // TODO
@@ -247,6 +263,9 @@ void process_buttons ( void ) {
         timer_pwm_out( TIM3, 4, tft_brightness, 1000000 );
       }
       else if ( cur_mode == MODE_BATTERY ) {
+        // TODO
+      }
+      else if ( cur_mode == MODE_TOUCH ) {
         // TODO
       }
       else if ( cur_mode == MODE_SD_CARD ) {
@@ -280,6 +299,9 @@ void process_buttons ( void ) {
       else if ( cur_mode == MODE_BATTERY ) {
         // TODO
       }
+      else if ( cur_mode == MODE_TOUCH ) {
+        // TODO
+      }
       else if ( cur_mode == MODE_SD_CARD ) {
         // TODO
       }
@@ -301,6 +323,9 @@ void process_buttons ( void ) {
         }
         else if ( cur_selection == SEL_MAIN_BATTERY ) {
           cur_mode = MODE_BATTERY;
+        }
+        else if ( cur_mode == MODE_TOUCH ) {
+          // TODO
         }
         else if ( cur_selection == SEL_MAIN_SD_CARD ) {
           // TODO
@@ -326,6 +351,9 @@ void process_buttons ( void ) {
       else if ( cur_mode == MODE_BATTERY ) {
         // TODO
       }
+      else if ( cur_mode == MODE_TOUCH ) {
+        // TODO
+      }
       else if ( cur_mode == MODE_SD_CARD ) {
         // TODO
       }
@@ -344,6 +372,7 @@ void process_buttons ( void ) {
            cur_mode == MODE_AUDIO ||
            cur_mode == MODE_BACKLIGHT ||
            cur_mode == MODE_BATTERY ||
+           cur_mode == MODE_TOUCH ||
            cur_mode == MODE_SD_CARD ||
            cur_mode == MODE_USB ) {
         // TODO: This relies on a specific ordering of the
