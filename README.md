@@ -4,7 +4,7 @@ This is a small board designed to act as a handheld GPS receiver, and eventually
 
 # Details
 
-The microcontroller core is an STM32L496Rx chip - I recommend the STM32L496RGT3, because it costs less than $1 to get an extra 512KB of Flash. The 320KB of built-in RAM is enough to store a 150KB framebuffer for the 320x240 16bpp ILI9341 display, but it doesn't leave much room for storage-intensive algorithms such as image processing. Still, there's no external storage to worry about besides the microSD card.
+The microcontroller core is an STM32L496Rx chip - I recommend the STM32L496RGT3, because it costs less than $1 to get an extra 512KB of Flash (although the chip itself is more like $10). The 320KB of built-in RAM is enough to store a 150KB framebuffer for the 320x240 16bpp ILI9341 display, but it doesn't leave much room for storage-intensive algorithms such as image processing. Still, there's no external storage to worry about besides the microSD card.
 
 The board is wired to use hardware periphererals for driving the SD/MMC interface, USB OTG, SPI for the display, and UART for talking to a "GY-NEO6MV2" GPS module. I've noticed that some listings for these u-blox Neo-6M-based GPS modules have red-colored boards with pinouts that won't work with this design; look for blue-colored ones and double-check the pinouts against the schematic. I might update the design to use the module itself instead of a cheap breakout board in the future, but for now, sorry for the inconvenience.
 
