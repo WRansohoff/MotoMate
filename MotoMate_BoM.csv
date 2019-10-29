@@ -34,7 +34,7 @@ R5,Resistor,0603,">= 2 KΩ, 1%",https://www.digikey.com/short/pdh2b4,$0.10,"This
 RN1,Resistor Network,1506,1 KΩ,https://www.digikey.com/short/pdhr1z,$0.29,Resistor array for various debouncing filters. Value isn't too important; it's just to help prevent the microcontroller from reading spurious button presses.
 RV1,Varistor,0603,5.5V (7.1V-9.3V),https://www.digikey.com/short/pdhrv3,$0.48,"TVS varistor for the +5V power line. It should serve a similar function to the TVS diodes on the data lines, protecting the system from Transient Voltage surges."
 SW1,Tactile Button,SMD,SPST,https://www.digikey.com/short/pdhr0w,$0.22,Reset button.
-SW2,Slide Switch,SMD,SPDT,,,"""Mute"" switch for the speaker."
+SW2,Slide Switch,SMD,SPDT,https://www.digikey.com/short/pd2qtz,$0.91,"""Mute"" switch for the speaker."
 "SW3, SW4",Tactile Button,SMD,SPST,https://www.digikey.com/short/pdhr0w,$0.44,"""Mode"" and ""Back"" tacticle buttons (user input)."
 SW5,Power Switch,Generic,125V / 10A,https://www.digikey.com/short/pdh2pn,$0.60,"These 125V / 10A ""rocker switches"" are very common - you might have some lying around that would fit the footprint."
 SW6,Navigation Switch,SMD,5-Direction,https://www.digikey.com/short/pdhr0h,$2.38,"""Navigation switch"" for user input. It has four directional buttons and one ""press"" button, plus a common pin which I connected to ground."
@@ -44,4 +44,4 @@ U3,Audio Amplifier,MSOP-8 (3x3 mm),PAM8302A,https://www.digikey.com/short/pdhwt9
 U4,Battery Charger,SOT-25,MCP73831,https://www.digikey.com/short/pdhw7v,$0.56,"Battery charging circuit. I use the 4.2V version with ""3.7V nominal / 4.2V charge"" lithium batteries."
 Y1,Crystal,5x3.2 mm,8 MHz,https://www.digikey.com/short/pdhr1d,$1.14,"""High-Speed External"" oscillator crystal. You can use values between 4MHz and 32MHz, but I usually use 8MHz."
 Y2,Crystal,3.2x1.5 mm,32.768 KHz,https://www.digikey.com/short/p2h0zh,$0.41,"""Low-Speed External"" oscillator crystal."
-Total:,,,,,$37.03,"You can shave a decent amount off this price by using generic connectors / crystals / etc, and by buying capacitors / resistors / diodes / etc in bulk. Just be sure to verify the footprints."
+Total:,,,,,$37.94,"You can shave a decent amount off this price by using generic connectors / crystals / etc, and by buying capacitors / resistors / diodes / etc in bulk. Just be sure to verify the footprints."
