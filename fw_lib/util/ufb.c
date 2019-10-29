@@ -142,8 +142,8 @@ void ufb_draw_letter( uFB* fb, uint16_t color,
 void ufb_draw_char( uFB* fb, uint16_t color,
                     int x, int y, char c,
                     int scale, int orient ) {
-  if ( x < 0 || x > ( fb->w - scale * 6 ) ) { return; }
-  if ( y < 0 || y > ( fb->h - scale * 8 ) ) { return; }
+  if ( x < 0 || x > ( fb->w + scale * 6 ) ) { return; }
+  if ( y < 0 || y > ( fb->h + scale * 8 ) ) { return; }
   uint32_t w0 = 0x00000000;
   uint32_t w1 = 0x00000000;
   if ( c == 'A' ) {
@@ -505,11 +505,9 @@ void ufb_draw_str( uFB* fb, uint16_t color, int x, int y, const char* cstr, int 
   int step = 6 * scale;
   while (cstr[i] != '\0') {
     if ( orient == UFB_ORIENT_V ) {
-      if ( x + offset > fb->w ) { return; }
       ufb_draw_char( fb, color, x + offset, y, cstr[ i ], scale, orient );
     }
     else if ( orient == UFB_ORIENT_H ) {
-      if ( y + offset > fb->h ) { return; }
       ufb_draw_char( fb, color, x, y + offset, cstr[ i ], scale, orient );
     }
     ++i;
