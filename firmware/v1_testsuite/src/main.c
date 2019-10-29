@@ -33,8 +33,7 @@ int main(void) {
 
     if ( cur_mode == MODE_MAIN_MENU ||
          cur_mode == MODE_AUDIO ||
-         cur_mode == MODE_BACKLIGHT ||
-         cur_mode == MODE_BATTERY ) {
+         cur_mode == MODE_BACKLIGHT ) {
       // Wait for a button press before continuing.
       while ( new_button_presses[ 0 ] == BTN_NONE ) { __WFI(); }
       // Process button input(s).
@@ -49,6 +48,13 @@ int main(void) {
       // Process button input(s), if any.
       process_buttons();
       new_gps_messages = 0;
+    }
+    else if ( cur_mode == MODE_BATTERY ) {
+      // TODO: Periodically re-read the ADC value and update.
+      // Wait for a button press before continuing.
+      while ( new_button_presses[ 0 ] == BTN_NONE ) { __WFI(); }
+      // Process button input(s).
+      process_buttons();
     }
   }
 }
