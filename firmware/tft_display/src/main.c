@@ -13,6 +13,9 @@
 #include "ili9341.h"
 #include "ufb.h"
 
+// Dummy 'current audio samples' value for HAL library.
+volatile int cur_samples = 32;
+
 // 320x240-pixel 16-bit (RGB-565) framebuffer. Note: it's 150KB of RAM
 uint16_t FRAMEBUFFER[ ILI9341_A ];
 uFB framebuffer = {
