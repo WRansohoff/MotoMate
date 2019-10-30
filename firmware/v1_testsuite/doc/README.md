@@ -19,3 +19,7 @@ Also, depending on how you install it, you might need to add its location (e.g. 
 First, install the dependencies (Python3, Sphinx, and Hawkmoth).
 
 Then, run `make html` in this directory.
+
+I've noticed a few discrepencies in the generated documents, but I would guess that most if it can be sorted out if I learn more about how to configure things.
+
+The autodoc plugin seems to have trouble with multiple declarations on one line, such as `int x, y;`. And it seems to mark structs as `int`s, but that might just be because I haven't generated documentation for the struct definitions.
