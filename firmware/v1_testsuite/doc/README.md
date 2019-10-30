@@ -8,7 +8,11 @@ It looks like Sphinx is usually used with Python projects, but there is a packag
 
 https://github.com/jnikula/hawkmoth
 
-Depending on how you install it, you might need to add its location (e.g. `/usr/local/lib/python3.x/dist-packages`) to your $PYTHONPATH environment variable.
+You'll probably need to set the LD\_LIBRARY\_PATH environment variable before running Sphinx:
+
+`export LD_LIBRARY_PATH=$(llvm-config --libdir)`
+
+Also, depending on how you install it, you might need to add its location (e.g. `/usr/local/lib/python3.x/dist-packages`) to your $PYTHONPATH environment variable.
 
 # Generating the Documentation
 
