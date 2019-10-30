@@ -56,8 +56,12 @@ extern uFB framebuffer;
 /** Desired brightness for the display's backlight, on a scale from [0.0 : 1.0] */
 extern volatile float tft_brightness;
 
-/** Current background color (Red, Green, Blue values). */
-extern volatile uint16_t bg_r, bg_g, bg_b;
+/** Current background color: red value. */
+extern volatile uint16_t bg_r;
+/** Current background color: green value. */
+extern volatile uint16_t bg_g;
+/** Current background color: blue value. */
+extern volatile uint16_t bg_b;
 
 // Current application 'mode' and menu selection.
 /** This variable stores the current application 'mode'. */
