@@ -77,7 +77,7 @@ extern volatile int cur_mode, cur_selection;
 // Values to track whether certain events have occurred.
 extern volatile int new_button_presses[ MAX_BTN_PRESSES ];
 extern volatile int new_gps_messages;
-// Current system clock speed, in Hz.
+/** Current system clock speed, in Hz. */
 extern uint32_t SystemCoreClock;
 
 #endif
