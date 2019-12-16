@@ -5,7 +5,7 @@ Part ID,Part type,Part size (Imperial),Part value,Example Digikey Item,Cost (qty
 C8,Capacitor,0603,1 μF,https://www.digikey.com/short/pdhnbv,$0.10,Decoupling capacitor for the analog voltage supply. Use X7 ceramic capacitors.
 "C9, C10",Capacitor,0402,20 pF,https://www.digikey.com/short/pdhnbj,$0.20,Decoupling capacitors for the high-speed external oscillator crystal. Actual values will depend on your crystal; 20pF is a rough estimate. Use C0G / NP0 ceramic capacitors.
 "C11, C12",Capacitor,0402,5 pF,https://www.digikey.com/short/pdhnbc,$0.20,Decoupling capacitors for the low-speed external oscillator crystal. Actual values will depend on your crystal; 5pF is a rough estimate. Use C0G / NP0 capacitors.
-"C14, C15, C16, C17",Capacitor,0603,220 nF,https://www.digikey.com/short/pdhnhv,$0.40,Filtering capacitors for the audio amplifier's input and output. Use X7 ceramic capacitors.
+"C16, C17",Capacitor,0603,220 nF,https://www.digikey.com/short/pdhnhv,$0.20,Filtering capacitors for the audio amplifier's input and output. Use X7 ceramic capacitors.
 C18,Capacitor,0805,10 μF,https://www.digikey.com/short/pdhn55,$0.13,Power supply decoupling capacitor for the audio amplifier. Use X5 or X7 ceramic capacitors.
 "CN1, CN2",Capacitor Network,0612,10 nF,https://www.digikey.com/short/pdhr2m,$0.64,Capacitor arrays for various debouncing filters. Values aren't too important; it's just to help prevent the microcontroller from incorrectly registering spurious button presses.
 D1,TVS Diode Network,SOT-143-4,SP0503,https://www.digikey.com/short/pdhfqd,$0.82,3-in-1 TVS diodes for USB data line filtering. These diodes should protect the two differential data lines and the OTG 'ID' line.
@@ -34,14 +34,13 @@ R5,Resistor,0603,">= 2 KΩ, 1%",https://www.digikey.com/short/pdh2b4,$0.10,"This
 RN1,Resistor Network,1506,1 KΩ,https://www.digikey.com/short/pdhr1z,$0.29,Resistor array for various debouncing filters. Value isn't too important; it's just to help prevent the microcontroller from reading spurious button presses.
 RV1,Varistor,0603,5.5V (7.1V-9.3V),https://www.digikey.com/short/pdhrv3,$0.48,"TVS varistor for the +5V power line. It should serve a similar function to the TVS diodes on the data lines, protecting the system from Transient Voltage surges."
 SW1,Tactile Button,SMD,SPST,https://www.digikey.com/short/pdhr0w,$0.22,Reset button.
-SW2,Slide Switch,SMD,SPDT,https://www.digikey.com/short/pd2qtz,$0.91,"""Mute"" switch for the speaker."
+"SW2, SW5",Slide Switch,SMD,SPDT,https://www.digikey.com/short/pd2qtz,$1.82,"""Mute"" switch for the speaker, and power on/off switch."
 "SW3, SW4",Tactile Button,SMD,SPST,https://www.digikey.com/short/pdhr0w,$0.44,"""Mode"" and ""Back"" tacticle buttons (user input)."
-SW5,Power Switch,Generic,125V / 10A,https://www.digikey.com/short/pdh2pn,$0.60,"These 125V / 10A ""rocker switches"" are very common - you might have some lying around that would fit the footprint."
 SW6,Navigation Switch,SMD,5-Direction,https://www.digikey.com/short/pdhr0h,$2.38,"""Navigation switch"" for user input. It has four directional buttons and one ""press"" button, plus a common pin which I connected to ground."
 U1,Microcontroller,QFP-64 (10x10 mm),STM32L496,https://www.digikey.com/short/pdhrd8,$10.99,"Microcontroller core. The STM32L496Rx is available with either 512KB or 1MB of Flash memory. ""-T6"" suffix is rated to 85C, ""-T3"" to 125C. The 1MB / 125C version is less than $1 more expensive than the 512KB / 85C one, so I linked to the better one."
-U2,Voltage Regulator,SOT-25,AP7365,https://www.digikey.com/short/pdh2m9,$0.52,"Main voltage regulator. I sometimes use a 3V version of this part instead of 3.3V to let the battery stretch a little more, but I linked to the more common 3.3V version here."
+U2,Voltage Regulator,DFN-6 (2x2 mm),LDFM33,https://www.digikey.com/short/p1r27t,$0.75,Main voltage regulator.
 U3,Audio Amplifier,MSOP-8 (3x3 mm),PAM8302A,https://www.digikey.com/short/pdhwt9,$0.63,Simple 2.5W mono audio amplifier. Mostly just for beeping and buzzing.
 U4,Battery Charger,SOT-25,MCP73831,https://www.digikey.com/short/pdhw7v,$0.56,"Battery charging circuit. I use the 4.2V version with ""3.7V nominal / 4.2V charge"" lithium batteries."
 Y1,Crystal,5x3.2 mm,8 MHz,https://www.digikey.com/short/pdhr1d,$1.14,"""High-Speed External"" oscillator crystal. You can use values between 4MHz and 32MHz, but I usually use 8MHz."
 Y2,Crystal,3.2x1.5 mm,32.768 KHz,https://www.digikey.com/short/p2h0zh,$0.41,"""Low-Speed External"" oscillator crystal."
-Total:,,,,,$37.94,"You can shave a decent amount off this price by using generic connectors / crystals / etc, and by buying capacitors / resistors / diodes / etc in bulk. Just be sure to verify the footprints."
+Total:,,,,,$38.28,"You can shave a decent amount off this price by using generic connectors / crystals / etc, and by buying capacitors / resistors / diodes / etc in bulk. Just be sure to verify the footprints."
